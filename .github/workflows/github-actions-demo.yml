@@ -11,30 +11,14 @@ jobs:
   test-in-docker:
 #       needs: build-docker
       runs-on: self-hosted
-      container:
-       image: rgl
-       volumes:
-        - $(pwd):/code
-        - ${OptiX_INSTALL_DIR}:/optix
-       env:
-        OptiX_INSTALL_DIR: /optix
-        NVIDIA_DRIVER_CAPABILITIES: all
-       options:
-        --net=host
-        --gpus all
       steps:
-        - name: build RGL in docker
-          run: ./setup.py --clean-build --with-pcl
-        - name: run RGL tests
-          run: ./build/test/RobotecGPULidar_test
-        
-#       - run: docker run
-#              --net=host \
-#              --gpus all \
-#              -v $(pwd):/code \
-#              -v ${OptiX_INSTALL_DIR}:/optix \
-#              -e OptiX_INSTALL_DIR=/optix \
-#              -e NVIDIA_DRIVER_CAPABILITIES=all \
-#              rgl:latest \
-#              sh -c "./setup.py --clean-build --with-pcl && ./build/test/RobotecGPULidar_test"
+        - run: docker run \
+             --net=host \
+             --gpus all \
+             -v $(pwd):/code \
+             -v ${OptiX_INSTALL_DIR}:/optix \
+             -e OptiX_INSTALL_DIR=/optix \
+             -e NVIDIA_DRIVER_CAPABILITIES=all \
+             rgl:latest \
+             sh -c "./setup.py --clean-build --with-pcl && ./build/test/RobotecGPULidar_test"
       
