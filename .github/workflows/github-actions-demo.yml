@@ -14,7 +14,14 @@ jobs:
         run: |
           ls ${{ github.workspace }}
 #       - run: docker build . --tag rgl:latest
-      - run: docker run --net=host --gpus all -v $(pwd):/code -v ${OptiX_INSTALL_DIR}:/optix -e OptiX_INSTALL_DIR=/optix -e NVIDIA_DRIVER_CAPABILITIES=all rgl:latest /bin/bash
-      - run: ./setup.py --clean-build --with-pcl
-      - run: ./build/test/RobotecGPULidar_test
+      - run: ./setup.py --clean-build --with-pcl \
+             ./build/test/RobotecGPULidar_test \
+             | docker run 
+             --net=host \
+             --gpus all \
+             -v $(pwd):/code \
+             -v ${OptiX_INSTALL_DIR}:/optix \
+             -e OptiX_INSTALL_DIR=/optix \
+             -e NVIDIA_DRIVER_CAPABILITIES=all \
+             -i rgl:latest /bin/bash
       - run: echo "🍏 This job's status is ${{ job.status }}."
