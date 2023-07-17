@@ -27,3 +27,5 @@ jobs:
           run: docker exec rgl sh -c "./setup.py --clean-build --with-pcl"
         - name: run tests
           run: docker exec rgl sh -c "./build/test/RobotecGPULidar_test"
+        - name: remove docker container
+          run: docker rm rgl
