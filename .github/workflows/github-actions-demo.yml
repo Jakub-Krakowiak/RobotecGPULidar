@@ -13,14 +13,15 @@ jobs:
       runs-on: self-hosted
       steps:
         - name: compile and test RGL in docker
-          run: docker run `
-               --net=host `
-               --gpus all `
-               -v $(pwd):/code `
-               -v ${OptiX_INSTALL_DIR}:/optix `
-               -e OptiX_INSTALL_DIR=/optix `
-               -e NVIDIA_DRIVER_CAPABILITIES=all `
-               rgl:latest `
+          run: |
+               docker run \
+               --net=host \
+               --gpus all \
+               -v $(pwd):/code \
+               -v ${OptiX_INSTALL_DIR}:/optix \
+               -e OptiX_INSTALL_DIR=/optix \
+               -e NVIDIA_DRIVER_CAPABILITIES=all \
+               rgl:latest \
                sh -c "./setup.py --clean-build && ./build/test/RobotecGPULidar_test"
   remove-build-files:
     needs: test-in-docker
