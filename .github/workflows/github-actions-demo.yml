@@ -14,6 +14,7 @@ jobs:
       steps:
         - name: start docker
           run: docker run
+             --name rgl
              --net=host 
              --gpus all 
              -v $(pwd):/code
