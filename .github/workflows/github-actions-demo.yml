@@ -12,15 +12,14 @@ jobs:
 #       needs: build-docker
       runs-on: self-hosted
       steps:
-        - run: echo ${OptiX_INSTALL_DIR}
-        - run: docker run \
-             --net=host \
-             --gpus all \
-             -v $(pwd):/code \
-             -v ${OptiX_INSTALL_DIR}:/optix \
-             -e OptiX_INSTALL_DIR=/optix \
-             -e NVIDIA_DRIVER_CAPABILITIES=all \
-             -it \
-             rgl:latest \
+        - run: docker run
+             --net=host 
+             --gpus all 
+             -v $(pwd):/code
+             -v ${OptiX_INSTALL_DIR}:/optix
+             -e OptiX_INSTALL_DIR=/optix
+             -e NVIDIA_DRIVER_CAPABILITIES=all
+             -it
+             rgl:latest
              sh -c "./setup.py --clean-build --with-pcl && ./build/test/RobotecGPULidar_test"
       
