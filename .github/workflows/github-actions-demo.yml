@@ -12,7 +12,7 @@ jobs:
 #       needs: build-docker
       runs-on: self-hosted
       steps:
-        - run: docker run
+        - run: docker exec
              --net=host 
              --gpus all 
              -v $(pwd):/code
