@@ -22,6 +22,6 @@ jobs:
              -e NVIDIA_DRIVER_CAPABILITIES=all
              rgl:latest
         - name: build RGL inside docker
-          run: docker exec rgl:latest sh -c "./setup.py --clean-build --with-pcl"
+          run: docker exec rgl sh -c "./setup.py --clean-build --with-pcl"
         - name: run tests
-          run: docker exec rgl:latest sh -c "./build/test/RobotecGPULidar_test"
+          run: docker exec rgl sh -c "./build/test/RobotecGPULidar_test"
