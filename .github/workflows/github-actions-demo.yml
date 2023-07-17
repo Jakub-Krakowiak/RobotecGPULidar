@@ -12,10 +12,9 @@ jobs:
     needs: checkout-repository
     runs-on: self-hosted
     steps:
-      - run: |
-             if [[ "$(docker images -q rgl:latest 2> /dev/null)" == "" ]];
+      - run: if [[ "$(docker images -q rgl:latest 2> /dev/null)" == "" ]];
              then \
-               docker build . --tag rgl:latest \
+               | docker build . --tag rgl:latest \
              fi
 
   test-in-docker:
