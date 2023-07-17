@@ -1,6 +1,6 @@
 name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in docker
-on: workflow_dispatch
+on: [workflow_dispatch, push]
 jobs:
 #   build-docker:
 #     runs-on: self-hosted
@@ -12,7 +12,8 @@ jobs:
 #       needs: build-docker
       runs-on: self-hosted
       steps:
-        - run: docker exec
+        - name: start docker
+          run: docker run
              --net=host 
              --gpus all 
              -v $(pwd):/code
@@ -20,5 +21,7 @@ jobs:
              -e OptiX_INSTALL_DIR=/optix
              -e NVIDIA_DRIVER_CAPABILITIES=all
              rgl:latest
-             sh -c "./setup.py --clean-build --with-pcl && ./build/test/RobotecGPULidar_test"
-      
+        - name: build RGL inside docker
+          run: docker exec rgl:latest sh -c "./setup.py --clean-build --with-pcl"
+        - name: run tests
+          run: docker exec rgl:latest sh -c "./build/test/RobotecGPULidar_test"
