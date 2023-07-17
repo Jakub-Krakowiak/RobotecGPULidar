@@ -12,11 +12,19 @@ jobs:
 #       needs: build-docker
       runs-on: self-hosted
       steps:
-        - name: start docker
-          run: docker run --net=host --gpus all -v $(pwd):/code -v ${OptiX_INSTALL_DIR}:/optix -e OptiX_INSTALL_DIR=/optix -e NVIDIA_DRIVER_CAPABILITIES=all rgl:latest sh -c "./setup.py --clean-build && ./build/test/RobotecGPULidar_test"
-#         - name: build RGL inside docker
-#           run: docker exec rgl sh -c "./setup.py --clean-build --with-pcl"
-#         - name: run tests
-#           run: docker exec rgl sh -c "./build/test/RobotecGPULidar_test"
-#         - name: remove docker container
-#           run: docker rm rgl
+        - name: compile and test RGL in docker
+          run: docker run `
+               --net=host `
+               --gpus all `
+               -v $(pwd):/code `
+               -v ${OptiX_INSTALL_DIR}:/optix `
+               -e OptiX_INSTALL_DIR=/optix `
+               -e NVIDIA_DRIVER_CAPABILITIES=all `
+               rgl:latest `
+               sh -c "./setup.py --clean-build && ./build/test/RobotecGPULidar_test"
+  remove-build-files:
+    needs: test-in-docker
+    runs-on: self-hosted
+    steps:
+      - name: remove build directory
+        run: sudo rm -rf build
