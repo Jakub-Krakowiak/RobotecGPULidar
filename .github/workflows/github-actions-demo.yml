@@ -13,7 +13,7 @@ jobs:
       runs-on: self-hosted
       steps:
         - name: start docker
-          run: docker run --net=host --gpus all -v $(pwd):/code -v ${OptiX_INSTALL_DIR}:/optix -e OptiX_INSTALL_DIR=/optix -e NVIDIA_DRIVER_CAPABILITIES=all rgl:latest sh -c "./setup.py --clean-build --with-pcl && ./build/test/RobotecGPULidar_test"
+          run: docker run --net=host --gpus all -v $(pwd):/code -v ${OptiX_INSTALL_DIR}:/optix -e OptiX_INSTALL_DIR=/optix -e NVIDIA_DRIVER_CAPABILITIES=all rgl:latest sh -c "./setup.py --clean-build && ./build/test/RobotecGPULidar_test"
 #         - name: build RGL inside docker
 #           run: docker exec rgl sh -c "./setup.py --clean-build --with-pcl"
 #         - name: run tests
