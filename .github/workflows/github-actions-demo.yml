@@ -12,6 +12,7 @@ jobs:
 #       needs: build-docker
       runs-on: self-hosted
       steps:
+        - run: echo ${OptiX_INSTALL_DIR}
         - run: docker run \
              --net=host \
              --gpus all \
