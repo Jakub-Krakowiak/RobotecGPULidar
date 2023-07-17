@@ -20,5 +20,6 @@ jobs:
              -e OptiX_INSTALL_DIR=/optix \
              -e NVIDIA_DRIVER_CAPABILITIES=all \
              rgl:latest \
+             -it \
              sh -c "./setup.py --clean-build --with-pcl && ./build/test/RobotecGPULidar_test"
       
