@@ -14,11 +14,9 @@ jobs:
       steps:
         - name: start docker
           run: docker run \
-             --detach \
-             --name rgl \
              --net=host \
              --gpus all \
-             -v $(pwd):/code \
+             -v ${pwd}:/code \
              -v ${OptiX_INSTALL_DIR}:/optix \
              -e OptiX_INSTALL_DIR=/optix \
              -e NVIDIA_DRIVER_CAPABILITIES=all \
