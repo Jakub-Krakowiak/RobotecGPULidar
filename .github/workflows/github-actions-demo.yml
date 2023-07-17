@@ -1,12 +1,11 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Build Docker
+run-name: ${{ github.actor }} builds docker image
 on: [push, pull_request]
 jobs:
-  Explore-GitHub-Actions:
+  Build-Docker:
     runs-on: self-hosted
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -15,4 +14,8 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - run: docker build . --tag rgl:latest
+      - run: docker run --net=host --gpus all -v $(pwd):/code -v ${OptiX_INSTALL_DIR}:/optix -e OptiX_INSTALL_DIR=/optix -e NVIDIA_DRIVER_CAPABILITIES=all -it rgl:latest /bin/bash
+      - run: ./setup.py --clean-build --with-pcl
+      - run: ./build/test/RobotecGPULidar_test
       - run: echo "🍏 This job's status is ${{ job.status }}."
