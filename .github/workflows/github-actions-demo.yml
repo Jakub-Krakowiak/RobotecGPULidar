@@ -12,6 +12,7 @@ jobs:
 #       needs: build-docker
       runs-on: self-hosted
       steps:
+        - run: sh
         - name: start docker
           run: docker run \
              --net=host \
