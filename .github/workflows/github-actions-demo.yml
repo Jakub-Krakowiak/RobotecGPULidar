@@ -12,7 +12,7 @@ jobs:
 #       needs: build-docker
       runs-on: self-hosted
       container:
-       image: rgl:latest
+       image: rgl
        volumes:
         - $(pwd):/code
         - ${OptiX_INSTALL_DIR}:/optix
