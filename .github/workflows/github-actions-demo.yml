@@ -8,7 +8,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       
-  build-docker:
+  build-docker-if-no-image:
     needs: checkout-repository
     runs-on: self-hosted
     steps:
@@ -19,7 +19,7 @@ jobs:
              fi
 
   test-in-docker:
-      needs: build-docker
+      needs: build-docker-if-no-image
       runs-on: self-hosted
       steps:
         - name: compile and test RGL in docker
@@ -34,6 +34,11 @@ jobs:
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                rgl:latest \
                sh -c "./setup.py && ./build/test/RobotecGPULidar_test && rm -r build"
-        - name: remove created docker container
-          run: |
-               docker rm rgl
+               
+  remove-created-docker-container:
+      needs: test-in-docker
+      runs-on: self-hosted
+      steps:
+         - name: remove created docker container
+           run: |
+                docker rm rgl
