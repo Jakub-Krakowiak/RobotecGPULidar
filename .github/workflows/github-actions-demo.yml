@@ -33,7 +33,7 @@ jobs:
                -e OptiX_INSTALL_DIR=/optix \
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                rgl:latest \
-               sh -c "./setup.py --clean-build && ./build/test/RobotecGPULidar_test"
+               sh -c "./setup.py && ./build/test/RobotecGPULidar_test && rm -r build"
         - name: remove created docker container
           run: |
                docker rm rgl
