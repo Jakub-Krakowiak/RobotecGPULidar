@@ -34,7 +34,9 @@ jobs:
                -e OptiX_INSTALL_DIR=/optix \
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                rgl:latest \
-               sh -c "./setup.py --with-ros2-standalone && \
+               sh -c "
+               source "/opt/ros/$ROS_DISTRO/setup.bash" && \
+               ./setup.py --with-ros2-standalone && \
                mv ./ros2_standalone/* ./build/ && \
                ./build/test/RobotecGPULidar_test && \
                rm -r build"
