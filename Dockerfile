@@ -63,10 +63,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # install required packages for RGL ROS2 standalone build
-RUN apt-get install -q -y --no-install-recommends \
-ros-${ROS_DISTRO}-cyclonedds ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
-ros-${ROS_DISTRO}-fastrtps ros-${ROS_DISTRO}-rmw-fastrtps-cpp \
-patchelf
+RUN apt-get install -y --no-install-recommends \
+    ros-${ROS_DISTRO}-cyclonedds ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    ros-${ROS_DISTRO}-fastrtps ros-${ROS_DISTRO}-rmw-fastrtps-cpp \
+    patchelf
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
