@@ -36,6 +36,7 @@ jobs:
                sh -c "./setup.py --with-pcl && ./build/test/RobotecGPULidar_test && rm -r build"
                
   remove-created-docker-container:
+      if: ${{ always() }}
       needs: test-in-docker
       runs-on: self-hosted
       steps:
