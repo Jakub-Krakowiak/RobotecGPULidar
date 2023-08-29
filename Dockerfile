@@ -62,6 +62,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-core=0.10.0-1* \
     && rm -rf /var/lib/apt/lists/*
 
+RUN sudo apt install -y software-properties-common && \
+    sudo add-apt-repository universe
+
+RUN sudo apt update && sudo apt install curl -y && \
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+    sudo apt update
+
 # install required packages for RGL ROS2 standalone build
 RUN apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-cyclonedds ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
