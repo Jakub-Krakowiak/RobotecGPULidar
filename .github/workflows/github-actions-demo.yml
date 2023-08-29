@@ -35,7 +35,7 @@ jobs:
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                rgl:latest \
                sh -c "
-               . "/opt/ros/humble/setup.bash" && \
+               . '/opt/ros/humble/setup.bash' && \
                ./setup.py --with-ros2-standalone && \
                mv ./ros2_standalone/* ./build/ && \
                ./build/test/RobotecGPULidar_test && \
