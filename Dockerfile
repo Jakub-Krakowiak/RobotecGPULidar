@@ -62,6 +62,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-core=0.10.0-1* \
     && rm -rf /var/lib/apt/lists/*
 
+    # Install common programs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gnupg2 \
+    lsb-release \
+    sudo \
+    software-properties-common \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get install -y software-properties-common && \
     add-apt-repository universe
 
