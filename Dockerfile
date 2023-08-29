@@ -85,14 +85,6 @@ RUN apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-fastrtps ros-${ROS_DISTRO}-rmw-fastrtps-cpp \
     patchelf
 
-# setup entrypoint
-COPY ./ros_entrypoint.sh /
-
-RUN chmod +x ./ros_entrypoint.sh
-
-ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]
-
 FROM with-ros2 AS with-pcl-ros2
 # Install RGL PCL dependencies via vcpkg
 COPY setup.py /
