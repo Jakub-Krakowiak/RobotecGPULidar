@@ -17,7 +17,8 @@ RUN apt install -y \
     freeglut3-dev \
     libglew-dev \
     libglfw3-dev \
-    python3
+    python3 \
+    sudo
 
 
 WORKDIR /code
