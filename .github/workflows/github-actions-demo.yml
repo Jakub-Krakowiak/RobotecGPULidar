@@ -13,9 +13,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: |
-             if [[ "$(docker images -q rgl:with-pcl-ros2 2> /dev/null)" == "" ]]
+             if [[ "$(docker images -q rgl:with-ros2 2> /dev/null)" == "" ]]
              then
-               docker build . --tag rgl:with-pcl-ros2 --target with-pcl-ros2
+               docker build . --tag rgl:with-ros2 --target with-ros2
              fi
 
   test-in-docker:
@@ -34,7 +34,7 @@ jobs:
                -e OptiX_INSTALL_DIR=/optix \
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                rgl:latest \
-               sh -c "./setup.py --with-pcl --with-ros2-standalone && \
+               sh -c "./setup.py --with-ros2-standalone && \
                mv ./ros2_standalone/* ./build/ && \
                ./build/test/RobotecGPULidar_test && \
                rm -r build"
