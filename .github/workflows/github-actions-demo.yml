@@ -1,6 +1,8 @@
 name: build-and-test-in-docker
-run-name: ${{ github.actor }} builds and tests RGL in docker
+run-name: ${{ github.actor }} builds and tests RGL ${{ $RGL_BUILD_TARGET }} in docker
 on: workflow_dispatch
+env:
+  RGL_BUILD_TARGET: with-ros2
 jobs:
   checkout-repository:
     runs-on: self-hosted
@@ -8,21 +10,21 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       
-  build-docker-if-no-image:
+  build-docker-image:
     needs: checkout-repository
     runs-on: self-hosted
     steps:
       - run: |
-             if [[ "$(docker images -q rgl:with-ros2 2> /dev/null)" == "" ]]
+             if [[ "$(docker images -q rgl:$RGL_BUILD_TARGET 2> /dev/null)" == "" ]]
              then
-               docker build . --tag rgl:with-ros2 --target with-ros2
+               docker build . --tag rgl:$RGL_BUILD_TARGET --target $RGL_BUILD_TARGET
              fi
 
-  test-in-docker:
-      needs: build-docker-if-no-image
+  build-RGL-in-docker:
+      needs: build-docker-image
       runs-on: self-hosted
       steps:
-        - name: compile and test RGL in docker
+        - name: build and test RGL on RGL docker image
           run: |
                docker run \
                --rm \
@@ -33,10 +35,34 @@ jobs:
                -v ${OptiX_INSTALL_DIR}:/optix \
                -e OptiX_INSTALL_DIR=/optix \
                -e NVIDIA_DRIVER_CAPABILITIES=all \
-               rgl:with-ros2 \
+               rgl:$RGL_BUILD_TARGET \
                /bin/bash -c "
                . /opt/ros/humble/setup.bash && \
                ./setup.py --with-ros2-standalone && \
-               mv ./ros2_standalone/* ./build/ && \
+               mv ./build/ros2_standalone/* ./build/ && \
                ./build/test/RobotecGPULidar_test && \
+               rm *.bin && \
+               rm *.yaml"
+               
+  test-RGL-in-default-nvidia-docker:
+      needs: build-RGL-in-docker
+      runs-on: self-hosted
+      steps:
+       - name: test RGL inside default nvidia docker
+         run: |
+               docker run \
+               --rm \
+               --name rgl \
+               --net=host \
+               --gpus all \
+               -v $(pwd):/code \
+               -v ${OptiX_INSTALL_DIR}:/optix \
+               -e OptiX_INSTALL_DIR=/optix \
+               -e NVIDIA_DRIVER_CAPABILITIES=all \
+               nvidia/cuda:11.7.1-base-ubuntu22.04 \
+               /bin/bash -c "
+               mv ./build/ros2_standalone/* ./build/ && \
+               ./build/test/RobotecGPULidar_test && \
+               rm *.bin && \
+               rm *.yaml
                rm -r build"
