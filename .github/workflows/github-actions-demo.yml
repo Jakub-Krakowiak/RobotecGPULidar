@@ -33,9 +33,9 @@ jobs:
                -v ${OptiX_INSTALL_DIR}:/optix \
                -e OptiX_INSTALL_DIR=/optix \
                -e NVIDIA_DRIVER_CAPABILITIES=all \
-               rgl:latest \
+               rgl:with-ros2 \
                /bin/bash -c "
-               . '/opt/ros/humble/setup.bash' && \
+               . /opt/ros/humble/setup.bash && \
                ./setup.py --with-ros2-standalone && \
                mv ./ros2_standalone/* ./build/ && \
                ./build/test/RobotecGPULidar_test && \
