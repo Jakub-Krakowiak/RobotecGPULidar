@@ -63,7 +63,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
     # Install common programs
-# RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update
+# && apt-get install -y --no-install-recommends \
     # curl \
     # gnupg2 \
     # lsb-release \
