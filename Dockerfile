@@ -64,13 +64,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
     # Install common programs
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    gnupg2 \
+    # curl \
+    # gnupg2 \
     lsb-release \
-    sudo \
-    software-properties-common \
-    wget \
-    && rm -rf /var/lib/apt/lists/*
+    # sudo \
+    # software-properties-common \
+    wget
+    # && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get install -y software-properties-common && \
     add-apt-repository universe
@@ -85,7 +85,7 @@ RUN apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-fastrtps ros-${ROS_DISTRO}-rmw-fastrtps-cpp \
     patchelf
 
-FROM with-ros2 AS with-pcl-ros2
+FROM with-ros2 AS with-pcl-and-ros2
 # Install RGL PCL dependencies via vcpkg
 COPY setup.py /
 RUN /setup.py --install-pcl-deps
