@@ -62,6 +62,7 @@ jobs:
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                nvidia/cuda:11.7.1-base-ubuntu22.04 \
                /bin/bash -c "
+               cd code && \
                ./build/test/RobotecGPULidar_test && \
                rm *.bin && \
                rm *.yaml
