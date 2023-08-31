@@ -62,26 +62,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-core=0.10.0-1* \
     && rm -rf /var/lib/apt/lists/*
 
-    # Install common programs
-RUN apt-get update
-# && apt-get install -y --no-install-recommends \
-    # curl \
-    # gnupg2 \
-    # lsb-release \
-    # sudo \
-    # software-properties-common \
-    # wget \
-    # && rm -rf /var/lib/apt/lists/*
+# RUN apt-get install -y software-properties-common && \
+#     add-apt-repository universe
 
-RUN apt-get install -y software-properties-common && \
-    add-apt-repository universe
-
-RUN apt-get update && apt-get install curl -y && \
-    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
-    apt-get update
+# RUN apt-get update && apt-get install curl -y && \
+#     curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+#     apt-get update
 
 # install required packages for RGL ROS2 standalone build
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-cyclonedds ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
     ros-${ROS_DISTRO}-fastrtps ros-${ROS_DISTRO}-rmw-fastrtps-cpp \
     patchelf
