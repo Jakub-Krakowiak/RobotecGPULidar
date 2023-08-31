@@ -63,13 +63,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
     # Install common programs
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# RUN apt-get update && apt-get install -y --no-install-recommends \
     # curl \
     # gnupg2 \
-    lsb-release \
+    # lsb-release \
     # sudo \
     # software-properties-common \
-    wget
+    # wget \
     # && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get install -y software-properties-common && \
