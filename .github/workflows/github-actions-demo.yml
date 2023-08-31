@@ -39,7 +39,8 @@ jobs:
                /bin/bash -c "
                . /opt/ros/humble/setup.bash && \
                ./setup.py --with-ros2-standalone && \
-               mv ./build/ros2_standalone/* ./build/ && \
+               ./build/test/RobotecGPULidar_test && \
+               cp -r ./build/ros2_standalone/* ./build/ && \
                ./build/test/RobotecGPULidar_test && \
                rm *.bin && \
                rm *.yaml"
@@ -61,7 +62,6 @@ jobs:
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                nvidia/cuda:11.7.1-base-ubuntu22.04 \
                /bin/bash -c "
-               mv ./build/ros2_standalone/* ./build/ && \
                ./build/test/RobotecGPULidar_test && \
                rm *.bin && \
                rm *.yaml
