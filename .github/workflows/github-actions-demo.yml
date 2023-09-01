@@ -23,6 +23,19 @@ jobs:
   build-RGL-in-docker:
       needs: build-docker-image
       runs-on: self-hosted
+      /TODO: migrate to actions docker to show errors
+      container:
+      image: rgl:$RGL_BUILD_TARGET
+      env:
+        
+      ports:
+        - 80
+      volumes:
+        - my_docker_volume:/volume_mount
+      options: --rm --name rgl --net=host
+    steps:
+      - name: Check for dockerenv file
+        run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
       steps:
         - name: build and test RGL on RGL docker image
           run: |
