@@ -24,12 +24,6 @@ WORKDIR /code
 
 RUN git config --system --add safe.directory /code
 
-FROM base AS with-pcl
-# Install RGL PCL dependencies via vcpkg
-COPY setup.py /
-RUN /setup.py --install-pcl-deps
-RUN rm /setup.py
-
 FROM base AS with-ros2
 
 # setup timezone
@@ -67,6 +61,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-cyclonedds ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
     ros-${ROS_DISTRO}-fastrtps ros-${ROS_DISTRO}-rmw-fastrtps-cpp \
     patchelf
+
+FROM base AS with-pcl
+# Install RGL PCL dependencies via vcpkg
+COPY setup.py /
+RUN /setup.py --install-pcl-deps
+RUN rm /setup.py
+
 
 FROM with-ros2 AS with-pcl-and-ros2
 # Install RGL PCL dependencies via vcpkg
