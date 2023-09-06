@@ -23,6 +23,9 @@ jobs:
   build-RGL-in-docker:
     needs: build-docker-image
     runs-on: self-hosted
+    defaults:
+      run:
+        shell: bash
     container:
       image: localhost:5000/rgl-with-ros2
       env:
