@@ -32,7 +32,7 @@ jobs:
         - 80
       volumes:
         - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
-        - ${OptiX_INSTALL_DIR}:/optix
+        - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
       options: 
         --rm 
         --name rgl
