@@ -41,6 +41,8 @@ jobs:
         --name rgl
         --gpus all
     steps:
+      - name: fix git
+        run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
       - name: source ros2
         run: . /opt/ros/humble/setup.bash && ./setup.py --with-ros2-standalone && ./build/test/RobotecGPULidar_test && cp -r ./build/ros2_standalone/* ./build/ && ./build/test/RobotecGPULidar_test && rm *.bin && rm *.yaml
       # - run: 
