@@ -75,6 +75,8 @@ jobs:
     steps:
       - name: test RGL inside default nvidia docker
         run: |
+             cd code && \
+             sleep 2 && \
              ./build/test/RobotecGPULidar_test && \
              rm *.bin && \
              rm *.yaml && \
