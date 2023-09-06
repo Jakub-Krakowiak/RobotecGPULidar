@@ -42,7 +42,8 @@ jobs:
         --gpus all
     steps:
       - name: source ros2
-        run: . /opt/ros/humble/setup.bash && \
+        run: |
+             . /opt/ros/humble/setup.bash && \
              ./setup.py --with-ros2-standalone && \
              ./build/test/RobotecGPULidar_test && \
              cp -r ./build/ros2_standalone/* ./build/ && \
