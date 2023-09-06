@@ -45,8 +45,10 @@ jobs:
         run: |
              . /opt/ros/humble/setup.bash && \
              ./setup.py --with-ros2-standalone && \
+             sleep 2 && \
              ./build/test/RobotecGPULidar_test && \
              cp -r ./build/ros2_standalone/* ./build/ && \
+             sleep 2 && \
              ./build/test/RobotecGPULidar_test && \
              rm *.bin && \
              rm *.yaml
