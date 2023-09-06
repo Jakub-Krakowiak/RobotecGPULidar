@@ -36,7 +36,7 @@ jobs:
                -e OptiX_INSTALL_DIR=/optix \
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                rgl:$RGL_BUILD_TARGET \
-               /bin/bash --noprofile --norc -e -o pipefail {0} -c "
+               /bin/bash --noprofile --norc -e -o pipefail -c "
                . /opt/ros/humble/setup.bash && \
                ./setup.py --with-ros2-standalone && \
                ./build/test/RobotecGPULidar_test && \
@@ -61,7 +61,7 @@ jobs:
                -e OptiX_INSTALL_DIR=/optix \
                -e NVIDIA_DRIVER_CAPABILITIES=all \
                nvidia/cuda:11.7.1-base-ubuntu22.04 \
-               /bin/bash --noprofile --norc -e -o pipefail {0} -c "
+               /bin/bash --noprofile --norc -e -o pipefail -c "
                cd code && \
                ./build/test/RobotecGPULidar_test && \
                rm *.bin && \
