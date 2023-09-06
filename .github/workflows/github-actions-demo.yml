@@ -42,12 +42,17 @@ jobs:
         --gpus all
     steps:
       - name: source ros2
-        run: . /opt/ros/humble/setup.bash
-      - run: ./setup.py --with-ros2-standalone
-      - run: ./build/test/RobotecGPULidar_test
-      - run: cp -r ./build/ros2_standalone/* ./build/
-      - run: ./build/test/RobotecGPULidar_test
-      - run: rm *.bin && rm *.yaml
+        run: . /opt/ros/humble/setup.bash && \
+             ./setup.py --with-ros2-standalone && \
+             ./build/test/RobotecGPULidar_test && \
+             cp -r ./build/ros2_standalone/* ./build/ && \
+             ./build/test/RobotecGPULidar_test && \
+             rm *.bin && rm *.yaml
+      # - run: 
+      # - run: 
+      # - run: 
+      # - run: ./build/test/RobotecGPULidar_test
+      # - run: rm *.bin && rm *.yaml
                
   # test-RGL-in-default-nvidia-docker:
   #   needs: build-RGL-in-docker
