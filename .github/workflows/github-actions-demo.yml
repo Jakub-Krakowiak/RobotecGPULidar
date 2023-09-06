@@ -24,7 +24,7 @@ jobs:
     needs: build-docker-image
     runs-on: self-hosted
     container:
-      image: localhost:5000/rgl-$RGL_BUILD_TARGET
+      image: localhost:5000/rgl-with-ros2
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
