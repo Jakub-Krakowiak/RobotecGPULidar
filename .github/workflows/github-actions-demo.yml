@@ -18,8 +18,13 @@ jobs:
              if [[ "$(docker images -q rgl:$RGL_BUILD_TARGET 2> /dev/null)" == "" ]]
              then
                docker build . --tag rgl:$RGL_BUILD_TARGET --target $RGL_BUILD_TARGET
+               docker tag rgl:$RGL_BUILD_TARGET localhost:5000/rgl-$RGL_BUILD_TARGET
+               docker push localhost:5000/rgl-$RGL_BUILD_TARGET
              fi
 
+# https://docs.docker.com/registry/deploying/
+# to activate local registry
+# docker run -d -p 5000:5000 --restart=always --name registry registry:2
   build-RGL-in-docker:
     needs: build-docker-image
     runs-on: self-hosted
