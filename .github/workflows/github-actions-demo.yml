@@ -31,8 +31,6 @@ jobs:
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
-      ports:
-        - 80
       volumes:
         - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
         - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
@@ -41,8 +39,8 @@ jobs:
         --name rgl
         --gpus all
     steps:
-      - name: fix git
-        run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
+      # - name: fix git
+      #   run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
       - name: source ros2
         run: |
              . /opt/ros/humble/setup.bash && \
