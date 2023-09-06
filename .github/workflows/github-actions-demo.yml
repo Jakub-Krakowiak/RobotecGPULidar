@@ -36,7 +36,6 @@ jobs:
       options: 
         --rm 
         --name rgl
-        --net=host
         --gpus all
     steps:
       - name: source ros2
