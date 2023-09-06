@@ -26,7 +26,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: code
     container:
       image: localhost:5000/rgl-with-ros2
       env:
@@ -43,13 +42,7 @@ jobs:
         --gpus all
     steps:
       - name: source ros2
-        run: |
-             . /opt/ros/humble/setup.bash && \
-             ./setup.py --with-ros2-standalone && \
-             ./build/test/RobotecGPULidar_test && \
-             cp -r ./build/ros2_standalone/* ./build/ && \
-             ./build/test/RobotecGPULidar_test && \
-             rm *.bin && rm *.yaml
+        run: . /opt/ros/humble/setup.bash && ./setup.py --with-ros2-standalone && ./build/test/RobotecGPULidar_test && cp -r ./build/ros2_standalone/* ./build/ && ./build/test/RobotecGPULidar_test && rm *.bin && rm *.yaml
       # - run: 
       # - run: 
       # - run: 
