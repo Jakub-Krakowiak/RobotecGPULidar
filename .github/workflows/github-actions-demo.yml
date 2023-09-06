@@ -41,7 +41,7 @@ jobs:
     steps:
       - name: fix git
         run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
-      - name: source ros2
+      - name: build and test RGL
         run: |
              . /opt/ros/humble/setup.bash && \
              ./setup.py --with-ros2-standalone && \
@@ -52,26 +52,31 @@ jobs:
              ./build/test/RobotecGPULidar_test && \
              rm *.bin && \
              rm *.yaml
+
+  test-RGL-in-default-nvidia-docker:
+    needs: build-RGL-in-docker
+    runs-on: self-hosted
+    defaults:
+      run:
+        shell: bash
+        working-directory: code
+    container:
+      image: nvidia/cuda:11.7.1-base-ubuntu22.04
+      env:
+        OptiX_INSTALL_DIR: /optix
+        NVIDIA_DRIVER_CAPABILITIES: all
+      volumes:
+        - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
+        - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
+      options: 
+        --rm 
+        --name rgl
+        --gpus all
+    steps:
+      - name: test RGL inside default nvidia docker
+        run: |
+             ./build/test/RobotecGPULidar_test && \
+             rm *.bin && \
+             rm *.yaml && \
+             rm -r build
                
-  # test-RGL-in-default-nvidia-docker:
-  #   needs: build-RGL-in-docker
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: test RGL inside default nvidia docker
-  #       run: |
-  #              docker run \
-  #              --rm \
-  #              --name rgl \
-  #              --net=host \
-  #              --gpus all \
-  #              -v $(pwd):/code \
-  #              -v ${OptiX_INSTALL_DIR}:/optix \
-  #              -e OptiX_INSTALL_DIR=/optix \
-  #              -e NVIDIA_DRIVER_CAPABILITIES=all \
-  #              nvidia/cuda:11.7.1-base-ubuntu22.04 \
-  #              /bin/bash -c "
-  #              cd code && \
-  #              ./build/test/RobotecGPULidar_test && \
-  #              rm *.bin && \
-  #              rm *.yaml
-  #              rm -r build"
