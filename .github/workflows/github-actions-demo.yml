@@ -32,7 +32,7 @@ jobs:
         - 80
       volumes:
         - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
-        - ${OptiX_INSTALL_DIR:/optix
+        - ${OptiX_INSTALL_DIR}:/optix
       options: 
         --rm 
         --name rgl
