@@ -29,7 +29,7 @@ jobs:
       image: ${{ steps.set_image.outputs.image }}
     steps:
       - id: set_image
-        run: echo "::set-output name=image::${{ env.RGL_BUILD_TARGET }}"
+        run: echo "image=${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
 
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
