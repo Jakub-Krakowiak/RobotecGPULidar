@@ -3,17 +3,8 @@ run-name: ${{ github.actor }} builds and tests RGL in docker
 on: [workflow_dispatch, push]
 env:
   RGL_BUILD_TARGET: with-ros2
-jobs:
-  make-env-variables-visible-to-github-actions:
-    runs-on: self-hosted
-    outputs:
-      image: ${{ steps.set_image.outputs.image }}
-    steps:
-      - id: set_image
-        run: echo "::set-output name=image::${{ env.RGL_BUILD_TARGET }}"
-        
+jobs:      
   checkout-repository:
-    needs: make-env-variables-visible-to-github-actions
     runs-on: self-hosted
     steps:
       - name: Check out repository code
@@ -31,11 +22,19 @@ jobs:
                docker push localhost:5000/rgl-$RGL_BUILD_TARGET
              fi
 
+  make-env-variables-visible-to-github-actions:
+    runs-on: self-hosted
+    outputs:
+      image: ${{ steps.set_image.outputs.image }}
+    steps:
+      - id: set_image
+        run: echo "::set-output name=image::${{ env.RGL_BUILD_TARGET }}"
+
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
 # docker run -d -p 5000:5000 --restart=always --name registry registry:2
   build-RGL-in-docker:
-    needs: build-docker-image
+    needs: make-env-variables-visible-to-github-actions
     runs-on: self-hosted
     defaults:
       run:
