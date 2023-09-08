@@ -38,7 +38,8 @@ jobs:
       - id: set_PWD
         run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
       - id: set_OptiX_INSTALL_DIR
-        run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
+        run: |
+             echo ${OptiX_INSTALL_DIR}
 
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
@@ -52,9 +53,9 @@ jobs:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
-        # - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
         - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
-        # - ${{ needs.publish-env-vars-for-RGL-build.outputs.PWD }}:/code
+        # the code volume is not necessary - it builds withouth it - investigate
+        - ${{ needs.publish-env-vars-for-RGL-build.outputs.PWD }}:/code
         # - ${{ needs.publish-env-vars-for-RGL-build.outputs.OptiX_INSTALL_DIR }}:/optix
       options: 
         --rm 
@@ -97,7 +98,6 @@ jobs:
         # RMW_IMPL is needed - RGL bug
         RMW_IMPLEMENTATION: rmw_fastrtps_cpp
       volumes:
-        # - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
         - ${{ needs.publish-env-vars-for-RGL-testing.outputs.PWD }}:/code
         - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
       options: 
