@@ -11,7 +11,9 @@ jobs:
     steps:
       - id: set_image
         run: echo "::set-output name=image::${{ env.RGL_BUILD_TARGET }}"
+        
   checkout-repository:
+    needs: make-env-variables-visible-to-github-actions
     runs-on: self-hosted
     steps:
       - name: Check out repository code
