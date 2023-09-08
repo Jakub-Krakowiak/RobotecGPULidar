@@ -3,9 +3,9 @@ run-name: ${{ github.actor }} builds and tests RGL in docker
 on: [workflow_dispatch, push]
 env:
   RGL_BUILD_TARGET: with-ros2
-defaults:
-      run:
-        shell: bash
+# defaults:
+#       run:
+#         shell: bash
 jobs:      
   checkout-repository:
     runs-on: self-hosted
