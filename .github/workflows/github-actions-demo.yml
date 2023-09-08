@@ -64,26 +64,32 @@ jobs:
         run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
       - name: build and test RGL
         run: |
-             . /opt/ros/humble/setup.bash && \
+             . /opt/ros/humble/setup.bash
+             
              if [[ $RGL_BUILD_TARGET == "base" ]]
              then
                  ./setup.py
-             fi && \
+             fi
+             
              if [[ $RGL_BUILD_TARGET == "with-pcl" ]]
              then
                  ./setup.py --with-pcl
-             fi && \
+             fi
+             
              if [[ $RGL_BUILD_TARGET == "with-ros2" ]]
              then
                  ./setup.py --with-ros2-standalone
                  cp -r ./build/ros2_standalone/*.so* ./build/
-             fi && \
+             fi
+             
              if [[ $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
              then
                  ./setup.py --with-pcl --with-ros2-standalone
                  cp -r ./build/ros2_standalone/*.so* ./build/
-             fi && \
-             sleep 2 && ./build/test/RobotecGPULidar_test
+             fi
+             
+             sleep 2
+             ./build/test/RobotecGPULidar_test
              
   publish-env-vars-for-RGL-testing:
     needs: build-RGL-in-docker
@@ -149,8 +155,8 @@ jobs:
     steps:
       - name: remove build files and tape recordings
         run: |
-             cd /code && \
-             rm -f *.bin && \
-             rm -f *.yaml && \
+             cd /code
+             rm -f *.bin
+             rm -f *.yaml
              rm -rf build
                
