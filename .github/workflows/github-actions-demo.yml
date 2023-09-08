@@ -23,6 +23,7 @@ jobs:
              fi
 
   make-env-variables-visible-to-github-actions:
+    needs: build-docker-image
     runs-on: self-hosted
     outputs:
       image: ${{ steps.set_image.outputs.image }}
