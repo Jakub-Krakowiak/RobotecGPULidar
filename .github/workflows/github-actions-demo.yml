@@ -38,95 +38,94 @@ jobs:
       - id: set_PWD
         run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
       - id: set_OptiX_INSTALL_DIR
-        run: |
-             echo ${OptiX_INSTALL_DIR}
+        run: echo ${OptiX_INSTALL_DIR}
 
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
 # docker run -d -p 5000:5000 --restart=always --name registry registry:2
-  build-RGL-in-docker:
-    needs: publish-env-vars-for-RGL-build
-    runs-on: self-hosted
-    container:
-      image: localhost:5000/rgl-${{ needs.publish-env-vars-for-RGL-build.outputs.RGL_BUILD_TARGET }}
-      env:
-        OptiX_INSTALL_DIR: /optix
-        NVIDIA_DRIVER_CAPABILITIES: all
-      volumes:
-        - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
-        # the code volume is not necessary - it builds withouth it - investigate
-        - ${{ needs.publish-env-vars-for-RGL-build.outputs.PWD }}:/code
-        # - ${{ needs.publish-env-vars-for-RGL-build.outputs.OptiX_INSTALL_DIR }}:/optix
-      options: 
-        --rm 
-        --name rgl
-        --gpus all
-    steps:
-      - name: fix git
-        run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
-      - name: build and test RGL
-        run: |
-             . /opt/ros/humble/setup.bash && \
-             ./setup.py --with-ros2-standalone && \
-             sleep 2 && ./build/test/RobotecGPULidar_test && \
-             cp -r ./build/ros2_standalone/*.so* ./build/ && \
-             sleep 2 && ./build/test/RobotecGPULidar_test
+  # build-RGL-in-docker:
+  #   needs: publish-env-vars-for-RGL-build
+  #   runs-on: self-hosted
+  #   container:
+  #     image: localhost:5000/rgl-${{ needs.publish-env-vars-for-RGL-build.outputs.RGL_BUILD_TARGET }}
+  #     env:
+  #       OptiX_INSTALL_DIR: /optix
+  #       NVIDIA_DRIVER_CAPABILITIES: all
+  #     volumes:
+  #       - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
+  #       # the code volume is not necessary - it builds withouth it - investigate
+  #       - ${{ needs.publish-env-vars-for-RGL-build.outputs.PWD }}:/code
+  #       # - ${{ needs.publish-env-vars-for-RGL-build.outputs.OptiX_INSTALL_DIR }}:/optix
+  #     options: 
+  #       --rm 
+  #       --name rgl
+  #       --gpus all
+  #   steps:
+  #     - name: fix git
+  #       run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
+  #     - name: build and test RGL
+  #       run: |
+  #            . /opt/ros/humble/setup.bash && \
+  #            ./setup.py --with-ros2-standalone && \
+  #            sleep 2 && ./build/test/RobotecGPULidar_test && \
+  #            cp -r ./build/ros2_standalone/*.so* ./build/ && \
+  #            sleep 2 && ./build/test/RobotecGPULidar_test
              
-  publish-env-vars-for-RGL-testing:
-    needs: build-RGL-in-docker
-    runs-on: self-hosted
-    outputs:
-      RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
-      PWD: ${{ steps.set_PWD.outputs.PWD }}
-      OptiX_INSTALL_DIR: ${{ steps.OptiX_INSTALL_DIR.outputs.OptiX_INSTALL_DIR }}
-    steps:
-      - id: set_RGL_BUILD_TARGET
-        run: echo "RGL_BUILD_TARGET=${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
-      - id: set_PWD
-        run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
-      - id: set_OptiX_INSTALL_DIR
-        run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
+  # publish-env-vars-for-RGL-testing:
+  #   needs: build-RGL-in-docker
+  #   runs-on: self-hosted
+  #   outputs:
+  #     RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
+  #     PWD: ${{ steps.set_PWD.outputs.PWD }}
+  #     OptiX_INSTALL_DIR: ${{ steps.OptiX_INSTALL_DIR.outputs.OptiX_INSTALL_DIR }}
+  #   steps:
+  #     - id: set_RGL_BUILD_TARGET
+  #       run: echo "RGL_BUILD_TARGET=${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
+  #     - id: set_PWD
+  #       run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
+  #     - id: set_OptiX_INSTALL_DIR
+  #       run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
 
-  test-RGL-in-default-nvidia-docker:
-    needs: publish-env-vars-for-RGL-testing
-    runs-on: self-hosted
-    container:
-      image: nvidia/cuda:11.7.1-base-ubuntu22.04
-      env:
-        OptiX_INSTALL_DIR: /optix
-        NVIDIA_DRIVER_CAPABILITIES: all
-        # RMW_IMPL is needed - RGL bug
-        RMW_IMPLEMENTATION: rmw_fastrtps_cpp
-      volumes:
-        - ${{ needs.publish-env-vars-for-RGL-testing.outputs.PWD }}:/code
-        - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
-      options: 
-        --rm 
-        --name rgl
-        --gpus all
-    steps:
-      - name: test RGL inside default nvidia docker
-        run: |
-             apt-get update && apt-get install -y libtinyxml2-9 && \
-             apt-get update && apt-get install -y libspdlog-dev && \
-             cd /code && \
-             sleep 2 && ./build/test/RobotecGPULidar_test
+  # test-RGL-in-default-nvidia-docker:
+  #   needs: publish-env-vars-for-RGL-testing
+  #   runs-on: self-hosted
+  #   container:
+  #     image: nvidia/cuda:11.7.1-base-ubuntu22.04
+  #     env:
+  #       OptiX_INSTALL_DIR: /optix
+  #       NVIDIA_DRIVER_CAPABILITIES: all
+  #       # RMW_IMPL is needed - RGL bug
+  #       RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+  #     volumes:
+  #       - ${{ needs.publish-env-vars-for-RGL-testing.outputs.PWD }}:/code
+  #       - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
+  #     options: 
+  #       --rm 
+  #       --name rgl
+  #       --gpus all
+  #   steps:
+  #     - name: test RGL inside default nvidia docker
+  #       run: |
+  #            apt-get update && apt-get install -y libtinyxml2-9 && \
+  #            apt-get update && apt-get install -y libspdlog-dev && \
+  #            cd /code && \
+  #            sleep 2 && ./build/test/RobotecGPULidar_test
              
-  remove-temp-files:
-    if: always()
-    needs: test-RGL-in-default-nvidia-docker
-    runs-on: self-hosted
-    container:
-      image: nvidia/cuda:11.7.1-base-ubuntu22.04        
-      volumes:
-        - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
-      options:
-        --rm
-    steps:
-      - name: remove build files and tape recordings
-        run: |
-             cd /code && \
-             rm -f *.bin && \
-             rm -f *.yaml && \
-             rm -rf build
+  # remove-temp-files:
+  #   if: always()
+  #   needs: test-RGL-in-default-nvidia-docker
+  #   runs-on: self-hosted
+  #   container:
+  #     image: nvidia/cuda:11.7.1-base-ubuntu22.04        
+  #     volumes:
+  #       - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
+  #     options:
+  #       --rm
+  #   steps:
+  #     - name: remove build files and tape recordings
+  #       run: |
+  #            cd /code && \
+  #            rm -f *.bin && \
+  #            rm -f *.yaml && \
+  #            rm -rf build
                
