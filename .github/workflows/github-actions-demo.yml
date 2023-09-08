@@ -1,4 +1,3 @@
-
 name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in docker
 on: [workflow_dispatch, push]
