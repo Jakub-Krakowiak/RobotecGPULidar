@@ -65,6 +65,8 @@ jobs:
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
+        # RMW_IMPL is needed - RGL bug
+        RMW_IMPLEMENTATION: rmw_fastrtps_cpp
       volumes:
         - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
         - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
@@ -75,6 +77,7 @@ jobs:
     steps:
       - name: test RGL inside default nvidia docker
         run: |
+             apt-get update && apt-get install -y libtinyxml2-9 && \
              apt-get update && apt-get install -y libspdlog-dev && \
              cd /code && \
              sleep 2 && ./build/test/RobotecGPULidar_test
@@ -87,7 +90,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: localhost:5000/rgl-with-ros2
+      image: localhost:5000/rgl-with-ros2        
       volumes:
         - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
       options:
