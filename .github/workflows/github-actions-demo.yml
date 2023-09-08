@@ -3,6 +3,9 @@ run-name: ${{ github.actor }} builds and tests RGL in docker
 on: [workflow_dispatch, push]
 env:
   RGL_BUILD_TARGET: with-ros2
+defaults:
+      run:
+        shell: bash
 jobs:      
   checkout-repository:
     runs-on: self-hosted
@@ -25,9 +28,6 @@ jobs:
   publish-env-vars-for-RGL-build:
     needs: build-docker-image
     runs-on: self-hosted
-    defaults:
-      run:
-        shell: bash
     outputs:
       RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
       PWD: ${{ steps.set_PWD.outputs.PWD }}
@@ -46,9 +46,6 @@ jobs:
   build-RGL-in-docker:
     needs: publish-env-vars-for-RGL-build
     runs-on: self-hosted
-    defaults:
-      run:
-        shell: bash
     container:
       image: localhost:5000/rgl-${{ needs.publish-env-vars-for-RGL-build.outputs.RGL_BUILD_TARGET }}
       env:
@@ -77,9 +74,6 @@ jobs:
   publish-env-vars-for-RGL-testing:
     needs: build-RGL-in-docker
     runs-on: self-hosted
-    defaults:
-      run:
-        shell: bash
     outputs:
       RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
       PWD: ${{ steps.set_PWD.outputs.PWD }}
@@ -95,9 +89,6 @@ jobs:
   test-RGL-in-default-nvidia-docker:
     needs: publish-env-vars-for-RGL-testing
     runs-on: self-hosted
-    defaults:
-      run:
-        shell: bash
     container:
       image: nvidia/cuda:11.7.1-base-ubuntu22.04
       env:
@@ -125,9 +116,6 @@ jobs:
     if: always()
     needs: test-RGL-in-default-nvidia-docker
     runs-on: self-hosted
-    defaults:
-      run:
-        shell: bash
     container:
       image: nvidia/cuda:11.7.1-base-ubuntu22.04        
       volumes:
