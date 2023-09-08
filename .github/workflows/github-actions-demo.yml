@@ -32,7 +32,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: localhost:5000/rgl-$RGL_BUILD_TARGET
+      image: localhost:5000/rgl-${{ env.RGL_BUILD_TARGET }}
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
