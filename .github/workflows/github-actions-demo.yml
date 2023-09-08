@@ -50,11 +50,9 @@ jobs:
         run: |
              . /opt/ros/humble/setup.bash && \
              ./setup.py --with-ros2-standalone && \
-             sleep 2 && \
-             ./build/test/RobotecGPULidar_test && \
+             sleep 2 && ./build/test/RobotecGPULidar_test && \
              cp -r ./build/ros2_standalone/* ./build/ && \
-             sleep 2 && \
-             ./build/test/RobotecGPULidar_test
+             sleep 2 && ./build/test/RobotecGPULidar_test
 
   test-RGL-in-default-nvidia-docker:
     needs: build-RGL-in-docker
@@ -77,10 +75,9 @@ jobs:
     steps:
       - name: test RGL inside default nvidia docker
         run: |
-             apt-get install -y libspdlog-dev && \
+             apt-get update && apt-get install -y libspdlog-dev && \
              cd /code && \
-             sleep 2 && \
-             ./build/test/RobotecGPULidar_test
+             sleep 2 && ./build/test/RobotecGPULidar_test
              
   remove-temp-files:
     if: always()
