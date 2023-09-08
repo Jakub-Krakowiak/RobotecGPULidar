@@ -51,7 +51,7 @@ jobs:
              . /opt/ros/humble/setup.bash && \
              ./setup.py --with-ros2-standalone && \
              sleep 2 && ./build/test/RobotecGPULidar_test && \
-             cp -r ./build/ros2_standalone/* ./build/ && \
+             cp -r ./build/ros2_standalone/*.so* ./build/ && \
              sleep 2 && ./build/test/RobotecGPULidar_test
 
   test-RGL-in-default-nvidia-docker:
@@ -90,7 +90,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: localhost:5000/rgl-with-ros2        
+      image: nvidia/cuda:11.7.1-base-ubuntu22.04        
       volumes:
         - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
       options:
@@ -98,6 +98,7 @@ jobs:
     steps:
       - name: remove build files and tape recordings
         run: |
+             cd /code && \
              rm *.bin && \
              rm *.yaml && \
              rm -r build
