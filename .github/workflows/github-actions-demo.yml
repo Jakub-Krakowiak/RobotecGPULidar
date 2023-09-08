@@ -60,6 +60,7 @@ jobs:
         --name rgl
         --gpus all
     steps:
+      # investigate the git fix 
       - name: fix git
         run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
       - name: build and test RGL
