@@ -56,9 +56,9 @@ jobs:
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
         # - /home/jakub/self-hosted-runner-test/actions-runner/_work/RobotecGPULidar/RobotecGPULidar:/code
-        # - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
+        - /home/jakub/optix/NVIDIA-OptiX-SDK-7.2.0-linux64-x86_64:/optix
         - ${{ needs.publish-env-vars-for-RGL-build.outputs.PWD }}:/code
-        - ${{ needs.publish-env-vars-for-RGL-build.outputs.OptiX_INSTALL_DIR }}:/optix
+        # - ${{ needs.publish-env-vars-for-RGL-build.outputs.OptiX_INSTALL_DIR }}:/optix
       options: 
         --rm 
         --name rgl
