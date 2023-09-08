@@ -35,7 +35,7 @@ jobs:
       - id: set_PWD
         run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
       - id: set_OptiX_INSTALL_DIR
-        run: echo "OptiX_INSTALL_DIR=${{ vars.OptiX_INSTALL_DIR }}" >> $GITHUB_OUTPUT
+        run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
 
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
