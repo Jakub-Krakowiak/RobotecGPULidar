@@ -41,7 +41,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: localhost:5000/rgl-${{ needs.make-env-variables-visible-to-github-actions.outputs.image }}
+      image: localhost:5000/rgl-${{ steps.make-env-variables-visible-to-github-actions.outputs.image }}
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
