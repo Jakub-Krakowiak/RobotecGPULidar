@@ -10,7 +10,7 @@ jobs:
       image: ${{ steps.set_image.outputs.image }}
     steps:
       - id: set_image
-        run: echo "::set-output name=image::${{RGL_BUILD_TARGET}}"
+        run: echo "::set-output name=image::${{ env.RGL_BUILD_TARGET }}"
   checkout-repository:
     runs-on: self-hosted
     steps:
