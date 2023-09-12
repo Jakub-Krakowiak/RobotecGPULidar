@@ -131,12 +131,10 @@ jobs:
                   apt-get update && apt-get install -y libspdlog-dev
                   
                   export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-                  echo $RMW_IMPLEMENTATION
-                  sleep 2
+                  
                   ./build/test/RobotecGPULidar_test
                   export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-                  echo $RMW_IMPLEMENTATION
-                  sleep 2
+                  
                   ./build/test/RobotecGPULidar_test
              else
                   cd /code
@@ -145,6 +143,7 @@ jobs:
              fi
 
   publish-env-vars-for-cleanup:
+    if: always()
     needs: test-RGL-in-default-nvidia-docker
     runs-on: self-hosted
     outputs:
