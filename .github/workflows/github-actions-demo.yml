@@ -113,8 +113,6 @@ jobs:
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
-        # RMW_IMPL is needed - RGL bug
-        RMW_IMPLEMENTATION: rmw_fastrtps_cpp
       volumes:
         - ${{ needs.publish-env-vars-for-RGL-testing.outputs.PWD }}:/code
         - ${{ needs.publish-env-vars-for-RGL-testing.outputs.OptiX_INSTALL_DIR }}:/optix
@@ -124,16 +122,26 @@ jobs:
         --gpus all
     steps:
       - name: test RGL inside default nvidia docker
-      # libtinyxml2-9 and libspdlog-dev are necessary because of a RGL ros2 standalone lacking dependencies bug
+      # libtinyxml2-9 and libspdlog-dev and RMW_IMPL are necessary because of a RGL ros2 standalone lacking dependencies bug
         run: |
              if [[ $RGL_BUILD_TARGET == "with-ros2" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
              then
                   apt-get update && apt-get install -y libtinyxml2-9
                   apt-get update && apt-get install -y libspdlog-dev
+                  apt-get update && apt-get install -y libiceoryx-binding-c-dev
+                  export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+                  echo $RMW_IMPLEMENTATION
+                  sleep 2
+                  ./build/test/RobotecGPULidar_test
+                  export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+                  echo $RMW_IMPLEMENTATION
+                  sleep 2
+                  ./build/test/RobotecGPULidar_test
+             else
+                  cd /code
+                  sleep 2
+                  ./build/test/RobotecGPULidar_test
              fi
-             cd /code
-             sleep 2
-             ./build/test/RobotecGPULidar_test
 
   publish-env-vars-for-cleanup:
     needs: test-RGL-in-default-nvidia-docker
