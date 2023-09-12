@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} builds and tests RGL in docker
 on: [workflow_dispatch, push]
 concurrency: RGL-CI
 env:
-  RGL_BUILD_TARGET: with-ros2
+  RGL_BUILD_TARGET: with-pcl-and-ros2
 defaults:
       run:
         shell: bash
