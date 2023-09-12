@@ -128,7 +128,7 @@ jobs:
              then
                   apt-get update && apt-get install -y libtinyxml2-9
                   apt-get update && apt-get install -y libspdlog-dev
-                  apt-get update && apt-get install -y libiceoryx-binding-c-dev
+                  
                   export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
                   echo $RMW_IMPLEMENTATION
                   sleep 2
