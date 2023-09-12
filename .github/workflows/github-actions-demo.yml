@@ -90,7 +90,7 @@ jobs:
                  cp -r ./build/ros2_standalone/*.so* ./build/
              fi
              
-             sleep 2
+             
              ./build/test/RobotecGPULidar_test
              
   publish-env-vars-for-RGL-testing:
@@ -128,13 +128,14 @@ jobs:
              then
                   
                   apt-get update && apt-get install -y libiceoryx-binding-c-dev
+                  apt-get update && apt-get install -y libtinyxml2-9
                   apt-get update && apt-get install -y libspdlog-dev
                   
                   export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-                  
+                  sleep 2
                   ./build/test/RobotecGPULidar_test
                   export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-                  
+                  sleep 2
                   ./build/test/RobotecGPULidar_test
              else
                   cd /code
