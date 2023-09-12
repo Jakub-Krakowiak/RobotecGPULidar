@@ -124,6 +124,10 @@ jobs:
       - name: test RGL inside default nvidia docker
       # libtinyxml2-9 and libspdlog-dev and RMW_IMPL are necessary because of a RGL ros2 standalone lacking dependencies bug
         run: |
+             if [[ $RGL_BUILD_TARGET == "with-pcl" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
+             then
+                  apt-get update && apt-get install -y libx11-6
+             fi
              if [[ $RGL_BUILD_TARGET == "with-ros2" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
              then
                   
