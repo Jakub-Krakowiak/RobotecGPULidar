@@ -90,7 +90,7 @@ jobs:
                  cp -r ./build/ros2_standalone/*.so* ./build/
              fi
              
-             
+             sleep 2
              ./build/test/RobotecGPULidar_test
              
   publish-env-vars-for-RGL-testing:
