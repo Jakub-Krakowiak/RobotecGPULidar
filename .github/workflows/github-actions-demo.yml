@@ -2,8 +2,12 @@ name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in docker
 on: [workflow_dispatch, push]
 concurrency: RGL-CI
+permissions:
+      contents: read
+      packages: write
 env:
-  RGL_BUILD_TARGET: with-pcl-and-ros2
+  RGL_BUILD_TARGET: with-ros2
+  REGISTRY: ghcr.io
 defaults:
       run:
         shell: bash
@@ -14,17 +18,37 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       
+  # build-docker-image:
+  #   needs: checkout-repository
+  #   runs-on: self-hosted
+  #   steps:
+  #     - run: |
+  #            if [[ "$(docker images -q rgl:$RGL_BUILD_TARGET 2> /dev/null)" == "" ]]
+  #            then
+  #              docker build . --tag rgl:$RGL_BUILD_TARGET --target $RGL_BUILD_TARGET
+  #              docker tag rgl:$RGL_BUILD_TARGET localhost:5000/rgl-$RGL_BUILD_TARGET
+  #              docker push localhost:5000/rgl-$RGL_BUILD_TARGET
+  #            fi
+
   build-docker-image:
     needs: checkout-repository
     runs-on: self-hosted
     steps:
-      - run: |
-             if [[ "$(docker images -q rgl:$RGL_BUILD_TARGET 2> /dev/null)" == "" ]]
-             then
-               docker build . --tag rgl:$RGL_BUILD_TARGET --target $RGL_BUILD_TARGET
-               docker tag rgl:$RGL_BUILD_TARGET localhost:5000/rgl-$RGL_BUILD_TARGET
-               docker push localhost:5000/rgl-$RGL_BUILD_TARGET
-             fi
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: rgl-$RGL_BUILD_TARGET
+          target: $RGL_BUILD_TARGET
+          # labels:
 
   publish-env-vars-for-RGL-build:
     needs: build-docker-image
@@ -48,12 +72,12 @@ jobs:
     needs: publish-env-vars-for-RGL-build
     runs-on: self-hosted
     container:
-      image: localhost:5000/rgl-${{ needs.publish-env-vars-for-RGL-build.outputs.RGL_BUILD_TARGET }}
+      image: ghcr.io/rgl-${{ needs.publish-env-vars-for-RGL-build.outputs.RGL_BUILD_TARGET }}
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
-        # the code volume is not necessary - it builds withouth it - investigate
+        # the code volume is not necessary - it builds without it - investigate
         - ${{ needs.publish-env-vars-for-RGL-build.outputs.PWD }}:/code
         - ${{ needs.publish-env-vars-for-RGL-build.outputs.OptiX_INSTALL_DIR }}:/optix
       options: 
