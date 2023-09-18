@@ -44,7 +44,6 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_LC }}:${{ env.RGL_BUILD_TARGET }}
           target: ${{ env.RGL_BUILD_TARGET }}
-          name: ${{ github.repository }}
 
   publish-env-vars-for-RGL-build:
     needs: build-docker-image
