@@ -13,22 +13,12 @@ defaults:
       run:
         shell: bash
 jobs:
-  setup-lc-repository-name:
-    runs-on: self-hosted
-    steps:
-      - name: Set LC repository name for docker tag
-        run: |
-            echo "REPOSITORY_LC=${REPOSITORY,,}" >> ${GITHUB_ENV}
-        env:
-            REPOSITORY: '${{ github.repository }}'
-  
   checkout-repository:
-    needs: setup-lc-repository-name
     runs-on: self-hosted
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      
+
   # build-docker-image:
   #   needs: checkout-repository
   #   runs-on: self-hosted
@@ -48,6 +38,11 @@ jobs:
       contents: read
       packages: write
     steps:
+      - name: Set LC repository name for docker tag
+        run: |
+              echo "REPOSITORY_LC=${REPOSITORY,,}" >> ${GITHUB_ENV}
+        env:
+              REPOSITORY: '${{ github.repository }}'
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
@@ -85,6 +80,11 @@ jobs:
         run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
       - id: set_OptiX_INSTALL_DIR
         run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
+      - name: Set LC repository name for docker tag
+        run: |
+              echo "REPOSITORY_LC=${REPOSITORY,,}" >> ${GITHUB_ENV}
+        env:
+              REPOSITORY: '${{ github.repository }}'
       - id: set_DOCKER_IMG_URL
         run: echo "OptiX_DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_LC }}:${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
 
