@@ -46,7 +46,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: rgl-{{ env.RGL_BUILD_TARGET }}
+          tags: rgl:{{ env.RGL_BUILD_TARGET }}
           target: |
                   {{ env.RGL_BUILD_TARGET }}
           # labels:
