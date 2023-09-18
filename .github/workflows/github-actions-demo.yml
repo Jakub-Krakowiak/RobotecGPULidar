@@ -7,7 +7,8 @@ permissions:
 env:
   RGL_BUILD_TARGET: with-ros2
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  # IMAGE_NAME: ${{ github.repository }}
+
 defaults:
       run:
         shell: bash
@@ -44,35 +45,38 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-            images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      #   with:
+      #       images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}/${{ env.RGL_BUILD_TARGET }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.repository }}:${{ env.RGL_BUILD_TARGET }}
+          # labels: ${{ steps.meta.outputs.labels }}
           target: with-ros2
 
   publish-env-vars-for-RGL-build:
     needs: build-docker-image
     runs-on: self-hosted
     outputs:
-      RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
+      # RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
       PWD: ${{ steps.set_PWD.outputs.PWD }}
       OptiX_INSTALL_DIR: ${{ steps.set_OptiX_INSTALL_DIR.outputs.OptiX_INSTALL_DIR }}
+      DOCKER_IMG_URL: ${{ steps.set_DOCKER_IMG_URL.outputs.DOCKER_IMG_URL }}
     steps:
-      - id: set_RGL_BUILD_TARGET
-        run: echo "RGL_BUILD_TARGET=${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
+      # - id: set_RGL_BUILD_TARGET
+      #   run: echo "RGL_BUILD_TARGET=${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
       - id: set_PWD
         run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
       - id: set_OptiX_INSTALL_DIR
         run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
+      - id: set_DOCKER_IMG_URL
+        run: echo "OptiX_DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.repository }}:${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
 
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
@@ -81,7 +85,7 @@ jobs:
     needs: publish-env-vars-for-RGL-build
     runs-on: self-hosted
     container:
-      image: ghcr.io/rgl-${{ needs.publish-env-vars-for-RGL-build.outputs.RGL_BUILD_TARGET }}
+      image: ${{ needs.publish-env-vars-for-RGL-build.outputs.DOCKER_IMG_URL }}
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
