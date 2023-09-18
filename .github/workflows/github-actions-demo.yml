@@ -46,7 +46,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: rgl:with-ros2
+          tags: rgl-with-ros2
           target: with-ros2
           # labels:
 
