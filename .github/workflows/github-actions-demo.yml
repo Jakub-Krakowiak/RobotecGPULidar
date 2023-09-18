@@ -56,7 +56,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_id }}:${{ env.RGL_BUILD_TARGET }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.RGL_BUILD_TARGET }}
           # labels: ${{ steps.meta.outputs.labels }}
           target: with-ros2
 
@@ -76,7 +76,7 @@ jobs:
       - id: set_OptiX_INSTALL_DIR
         run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
       - id: set_DOCKER_IMG_URL
-        run: echo "OptiX_DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ github.repository_id }}:${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
+        run: echo "OptiX_DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ github.repository }}:${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
 
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
