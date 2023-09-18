@@ -46,9 +46,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: rgl:{{ env.RGL_BUILD_TARGET }}
-          target: |
-                  {{ env.RGL_BUILD_TARGET }}
+          tags: rgl:with-ros2
+          target: with-ros2
           # labels:
 
   publish-env-vars-for-RGL-build:
@@ -123,12 +122,12 @@ jobs:
     runs-on: self-hosted
     outputs:
       PWD: ${{ steps.set_PWD.outputs.PWD }}
-      OptiX_INSTALL_DIR: ${{ steps.OptiX_INSTALL_DIR.outputs.OptiX_INSTALL_DIR }}
+      # OptiX_INSTALL_DIR: ${{ steps.OptiX_INSTALL_DIR.outputs.OptiX_INSTALL_DIR }}
     steps:
       - id: set_PWD
         run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
-      - id: set_OptiX_INSTALL_DIR
-        run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
+      # - id: set_OptiX_INSTALL_DIR
+      #   run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
 
   test-RGL-in-default-nvidia-docker:
     needs: publish-env-vars-for-RGL-testing
@@ -140,7 +139,7 @@ jobs:
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
         - ${{ needs.publish-env-vars-for-RGL-testing.outputs.PWD }}:/code
-        - ${{ needs.publish-env-vars-for-RGL-testing.outputs.OptiX_INSTALL_DIR }}:/optix
+        # - ${{ needs.publish-env-vars-for-RGL-testing.outputs.OptiX_INSTALL_DIR }}:/optix
       options: 
         --rm 
         --name rgl
