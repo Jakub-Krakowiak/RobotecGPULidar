@@ -5,7 +5,14 @@ concurrency: RGL-CI
 permissions:
       contents: read
 jobs:
+  checkout-repository:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
   test-all-configurations:
+    needs: checkout-repository
     runs-on: self-hosted
     steps:
       - name: test base
