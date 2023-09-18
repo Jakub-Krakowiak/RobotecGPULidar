@@ -86,7 +86,7 @@ jobs:
         env:
               REPOSITORY: '${{ github.repository }}'
       - id: set_DOCKER_IMG_URL
-        run: echo "OptiX_DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_LC }}:${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_LC }}:${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
 
 # https://docs.docker.com/registry/deploying/
 # to activate local registry
