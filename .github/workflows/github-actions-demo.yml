@@ -23,6 +23,7 @@ jobs:
             REPOSITORY: '${{ github.repository }}'
   
   checkout-repository:
+    needs: setup-lc-repository-name
     runs-on: self-hosted
     steps:
       - name: Check out repository code
