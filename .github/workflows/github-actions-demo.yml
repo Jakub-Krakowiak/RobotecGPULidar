@@ -2,9 +2,8 @@ name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in docker
 on: [workflow_dispatch, push]
 concurrency: RGL-CI
-# permissions:
-#       contents: read
-#       packages: write
+permissions:
+      contents: read
 env:
   RGL_BUILD_TARGET: with-ros2
   REGISTRY: ghcr.io
@@ -34,6 +33,9 @@ jobs:
   build-docker-image:
     needs: checkout-repository
     runs-on: self-hosted
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
