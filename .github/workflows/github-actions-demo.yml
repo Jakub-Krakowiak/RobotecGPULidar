@@ -12,7 +12,16 @@ env:
 defaults:
       run:
         shell: bash
-jobs:      
+jobs:
+  setup-lc-repository-name:
+    runs-on: self-hosted
+    steps:
+      - name: Set LC repository name for docker tag
+        run: |
+            echo "REPOSITORY_LC=${REPOSITORY,,}" >> ${GITHUB_ENV}
+        env:
+            REPOSITORY: '${{ github.repository }}'
+  
   checkout-repository:
     runs-on: self-hosted
     steps:
@@ -38,11 +47,6 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Set LC repository name for docker tag
-        run: |
-            echo "REPOSITORY_LC=${REPOSITORY,,}" >> ${GITHUB_ENV}
-        env:
-            REPOSITORY: '${{ github.repository }}'
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
