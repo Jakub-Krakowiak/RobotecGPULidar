@@ -1,46 +1,26 @@
-name: build-and-test-in-docker
+name: build-and-test-in-Docker-subworkflow
 run-name: ${{ github.actor }} builds and tests RGL in Docker
 on:
-  workflow_dispatch:
-    inputs:
-      RGL_BUILD_TARGET:
-        required: false
-        default: base
-        type: string
-      TAG:
-        required: false
-        default: latest
-        type: string
   workflow_call:
     inputs:
       RGL_BUILD_TARGET:
         required: true
-        default: base
         type: string
       TAG:
         required: true
-        default: latest
         type: string
-# concurrency: RGL-CI
 permissions:
       contents: read
 env:
-  RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET || 'base'}}
-  TAG: ${{ inputs.TAG || 'latest'}}
+  RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET}}
+  TAG: ${{ inputs.TAG}}
   REGISTRY: ghcr.io
 
 defaults:
       run:
         shell: bash
 jobs:
-  checkout-repository:
-    runs-on: self-hosted
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-
   publish-env-vars-for-RGL-build:
-    needs: checkout-repository
     runs-on: self-hosted
     outputs:
       PWD: ${{ steps.set_PWD.outputs.PWD }}

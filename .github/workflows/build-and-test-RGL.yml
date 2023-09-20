@@ -1,0 +1,50 @@
+name: build-and-test-in-Docker
+run-name: ${{ github.actor }} builds and tests RGL in Docker
+concurrency: RGL-CI
+on:
+    pull_request:
+        branches:
+          - main
+    workflow_dispatch:
+        inputs:
+           TAG:
+             required: false
+             default: latest
+             type: string
+permissions:
+      contents: read
+env:
+  RGL_BUILD_TARGET: base
+  TAG: ${{ inputs.TAG || 'latest' }}
+  REGISTRY: ghcr.io
+
+defaults:
+      run:
+        shell: bash
+jobs:
+  checkout-repository:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+  
+  publish-env-vars-for-RGL-build:
+    needs: checkout-repository
+    runs-on: self-hosted
+    outputs:
+      TAG: ${{ steps.set_TAG.outputs.TAG }}
+      RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
+    steps:
+      - id: set_TAG
+        run: echo "TAG=$TAG" >> $GITHUB_OUTPUT
+
+      - id: set_RGL_BUILD_TARGET
+        run: echo "RGL_BUILD_TARGET=$RGL_BUILD_TARGET" >> $GITHUB_OUTPUT
+
+  build-and-test-the-new-image:
+    needs: publish-env-vars-for-RGL-build
+    uses: ./.github/workflows/build-and-test-RGL-subworkflow.yml
+    with:
+      RGL_BUILD_TARGET: ${{ needs.publish-env-vars-for-RGL-build.outputs.RGL_BUILD_TARGET }}
+      TAG: ${{ needs.publish-env-vars-for-RGL-build.outputs.TAG }}
+      

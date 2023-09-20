@@ -1,7 +1,11 @@
 name: publish-docker-image
 run-name: ${{ github.actor }} publishes RGL Docker image
-on: [workflow_dispatch]
-# concurrency: RGL-CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+concurrency: RGL-CI
 permissions:
       contents: read
 env:
@@ -28,6 +32,14 @@ jobs:
       BRANCH: ${{ steps.extract_branch.outputs.branch }}
       RGL_BUILD_TARGET: ${{ steps.publish_build_target.outputs.RGL_BUILD_TARGET }}
     steps:
+      - name: Publish build target for testing
+        run: echo "RGL_BUILD_TARGET=$RGL_BUILD_TARGET" >> $GITHUB_OUTPUT
+        id: publish_build_target
+      
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
       - name: Set LC repository owner name for docker tag
         run: |
               echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
@@ -49,10 +61,6 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:latest
           target: ${{ env.RGL_BUILD_TARGET }}
 
-      - name: Extract branch name
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-
       - name: Build and push Docker image to branch name tag
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
@@ -61,13 +69,9 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:${{ steps.extract_branch.outputs.branch }}
           target: ${{ env.RGL_BUILD_TARGET }}
       
-      - name: publish build target for testing
-        run: echo "RGL_BUILD_TARGET=$RGL_BUILD_TARGET" >> $GITHUB_OUTPUT
-        id: publish_build_target
-      
   build-and-test-the-new-image:
     needs: build-docker-image
-    uses: ./.github/workflows/build-RGL-and-test.yml
+    uses: ./.github/workflows/build-and-test-RGL-subworkflow.yml
     with:
       RGL_BUILD_TARGET: ${{ needs.build-docker-image.outputs.RGL_BUILD_TARGET }}
       TAG: ${{ needs.build-docker-image.outputs.BRANCH }}
