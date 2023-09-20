@@ -24,6 +24,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      BRANCH: ${{ steps.extract_branch.outputs.branch }}
+      RGL_BUILD_TARGET: ${{ steps.publish_build_target.outputs.RGL_BUILD_TARGET }}
     steps:
       - name: Set LC repository owner name for docker tag
         run: |
@@ -58,8 +61,13 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:${{ steps.extract_branch.outputs.branch }}
           target: ${{ env.RGL_BUILD_TARGET }}
       
-      - name: Build and test the new image
-        uses: Jakub-Krakowiak/RobotecGPULidar/.github/workflows/build-RGL-and-test.yml@main
-        with:
-          RGL_BUILD_TARGET: ${{ env.RGL_BUILD_TARGET }}
-          TAG: ${{ steps.extract_branch.outputs.branch }}
+      - name: publish build target for testing
+        run: echo "RGL_BUILD_TARGET=$RGL_BUILD_TARGET" >> $GITHUB_OUTPUT
+        id: publish_build_target
+      
+  build-and-test-the-new-image:
+    needs: build-docker-image
+    uses: Jakub-Krakowiak/RobotecGPULidar/.github/workflows/build-RGL-and-test.yml@main
+    with:
+      RGL_BUILD_TARGET: ${{ needs.build-docker-image.outputs.RGL_BUILD_TARGET }}
+      TAG: ${{ needs.build-docker-image.outputs.BRANCH }}
