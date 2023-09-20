@@ -7,13 +7,12 @@ on:
     inputs:
       RGL_BUILD_TARGET:
         required: true
-        default: base
         type: string
 concurrency: RGL-CI
 permissions:
       contents: read
 env:
-  RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET}}
+  RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET || 'base'}}
   REGISTRY: ghcr.io
 
 defaults:
