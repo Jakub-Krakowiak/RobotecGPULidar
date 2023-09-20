@@ -1,7 +1,7 @@
 name: publish-docker-image
 run-name: ${{ github.actor }} publishes RGL Docker image
 on: [workflow_dispatch]
-concurrency: RGL-CI
+# concurrency: RGL-CI
 permissions:
       contents: read
 env:

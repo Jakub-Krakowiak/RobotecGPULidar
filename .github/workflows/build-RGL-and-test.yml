@@ -21,7 +21,7 @@ on:
         required: true
         default: latest
         type: string
-concurrency: RGL-CI
+# concurrency: RGL-CI
 permissions:
       contents: read
 env:
