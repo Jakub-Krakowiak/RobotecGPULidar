@@ -67,7 +67,7 @@ jobs:
       
   build-and-test-the-new-image:
     needs: build-docker-image
-    uses: Jakub-Krakowiak/RobotecGPULidar/.github/workflows/build-RGL-and-test.yml@main
+    uses: ./.github/workflows/build-RGL-and-test.yml
     with:
       RGL_BUILD_TARGET: ${{ needs.build-docker-image.outputs.RGL_BUILD_TARGET }}
       TAG: ${{ needs.build-docker-image.outputs.BRANCH }}
