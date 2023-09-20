@@ -59,7 +59,7 @@ jobs:
           target: ${{ env.RGL_BUILD_TARGET }}
       
       - name: Build and test the new image
-        uses: ./.github/workflows/build-RGL-and-test.yml@main
+        uses: Jakub-Krakowiak/RobotecGPULidar/.github/workflows/build-RGL-and-test.yml@main
         with:
           RGL_BUILD_TARGET: ${{ env.RGL_BUILD_TARGET }}
           TAG: ${{ steps.extract_branch.outputs.branch }}
