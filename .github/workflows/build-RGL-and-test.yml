@@ -1,6 +1,6 @@
 name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in Docker
-on: [push, workflow_dispatch]
+on: [workflow_dispatch]
 concurrency: RGL-CI
 permissions:
       contents: read
@@ -18,35 +18,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-  build-docker-image:
-    needs: checkout-repository
-    runs-on: self-hosted
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Set LC repository name for docker tag
-        run: |
-              echo "REPOSITORY_LC=${REPOSITORY,,}" >> $GITHUB_ENV
-        env:
-              REPOSITORY: '${{ github.repository }}'
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_LC }}:${{ env.RGL_BUILD_TARGET }}
-          target: ${{ env.RGL_BUILD_TARGET }}
-
   publish-env-vars-for-RGL-build:
-    needs: build-docker-image
+    needs: checkout-repository
     runs-on: self-hosted
     outputs:
       PWD: ${{ steps.set_PWD.outputs.PWD }}
@@ -59,11 +32,11 @@ jobs:
         run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
       - name: Set LC repository name for docker tag
         run: |
-              echo "REPOSITORY_LC=${REPOSITORY,,}" >> $GITHUB_ENV
+              echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
         env:
-              REPOSITORY: '${{ github.repository }}'
+              REPOSITORY_OWNER: '${{ github.repository_owner }}'
       - id: set_DOCKER_IMG_URL
-        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_LC }}:${{ env.RGL_BUILD_TARGET }}" >> $GITHUB_OUTPUT
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:latest" >> $GITHUB_OUTPUT
 
   build-RGL-in-docker:
     needs: publish-env-vars-for-RGL-build
@@ -87,8 +60,11 @@ jobs:
         run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
       - name: build and test RGL
         run: |
-             . /opt/ros/humble/setup.bash
-             
+             if [[ $RGL_BUILD_TARGET == "with-ros2" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
+             then
+                 . /opt/ros/humble/setup.bash
+             fi
+
              if [[ $RGL_BUILD_TARGET == "base" ]]
              then
                  ./setup.py
@@ -102,12 +78,15 @@ jobs:
              if [[ $RGL_BUILD_TARGET == "with-ros2" ]]
              then
                  ./setup.py --with-ros2-standalone
-                 cp -r ./build/ros2_standalone/*.so* ./build/
              fi
              
              if [[ $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
              then
                  ./setup.py --with-pcl --with-ros2-standalone
+             fi
+
+             if [[ $RGL_BUILD_TARGET == "with-ros2" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
+             then
                  cp -r ./build/ros2_standalone/*.so* ./build/
              fi
              
