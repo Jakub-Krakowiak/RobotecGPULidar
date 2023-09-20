@@ -1,11 +1,19 @@
 name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in Docker
-on: [push, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      RGL_BUILD_TARGET:
+        required: true
+        default: base
+        type: string
 concurrency: RGL-CI
 permissions:
       contents: read
 env:
-  RGL_BUILD_TARGET: base
+  RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET}}
   REGISTRY: ghcr.io
 
 defaults:
