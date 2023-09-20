@@ -1,18 +1,32 @@
 name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in Docker
 on:
-  push:
   workflow_dispatch:
+    inputs:
+      RGL_BUILD_TARGET:
+        required: false
+        default: base
+        type: string
+      TAG:
+        required: false
+        default: latest
+        type: string
   workflow_call:
     inputs:
       RGL_BUILD_TARGET:
         required: true
+        default: base
+        type: string
+      TAG:
+        required: true
+        default: latest
         type: string
 concurrency: RGL-CI
 permissions:
       contents: read
 env:
   RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET || 'base'}}
+  TAG: ${{ inputs.TAG || 'latest'}}
   REGISTRY: ghcr.io
 
 defaults:
@@ -43,7 +57,7 @@ jobs:
         env:
               REPOSITORY_OWNER: '${{ github.repository_owner }}'
       - id: set_DOCKER_IMG_URL
-        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:latest" >> $GITHUB_OUTPUT
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
 
   build-RGL-in-docker:
     needs: publish-env-vars-for-RGL-build

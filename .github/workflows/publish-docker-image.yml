@@ -57,3 +57,9 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:${{ steps.extract_branch.outputs.branch }}
           target: ${{ env.RGL_BUILD_TARGET }}
+      
+      - name: Build and test the new image
+        uses: ./.github/workflows/build-RGL-and-test.yml
+        with:
+          RGL_BUILD_TARGET: ${{ env.RGL_BUILD_TARGET }}
+          TAG: ${{ steps.extract_branch.outputs.branch }}
