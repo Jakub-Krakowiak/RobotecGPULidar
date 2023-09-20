@@ -1,6 +1,6 @@
 name: build-and-test-in-docker
 run-name: ${{ github.actor }} builds and tests RGL in Docker
-on: [workflow_dispatch]
+on: [push, workflow_dispatch]
 concurrency: RGL-CI
 permissions:
       contents: read
