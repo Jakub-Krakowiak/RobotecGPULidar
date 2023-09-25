@@ -6,6 +6,12 @@ on:
       - closed
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      OVERRIDE_MERGE_CHECK:
+       required: false
+       default: true
+       type: boolean
 concurrency: RGL-CI
 permissions:
       contents: read
@@ -18,7 +24,7 @@ defaults:
         shell: bash
 jobs:
   checkout-repository:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || inputs.OVERRIDE_MERGE_CHECK == true
     runs-on: self-hosted
     steps:
       - name: Check out repository code
