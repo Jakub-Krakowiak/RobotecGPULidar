@@ -6,14 +6,14 @@ on:
       RGL_BUILD_TARGET:
         required: true
         type: string
-      TAG:
+      DOCKER_IMG_URL:
         required: true
         type: string
 permissions:
       contents: read
 env:
   RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET}}
-  TAG: ${{ inputs.TAG}}
+  DOCKER_IMG_URL: ${{ inputs.DOCKER_IMG_URL}}
   REGISTRY: ghcr.io
 
 defaults:
@@ -29,15 +29,12 @@ jobs:
     steps:
       - id: set_PWD
         run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
+
       - id: set_OptiX_INSTALL_DIR
         run: echo "OptiX_INSTALL_DIR=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
-      - name: Set LC repository name for docker tag
-        run: |
-              echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
-        env:
-              REPOSITORY_OWNER: '${{ github.repository_owner }}'
+
       - id: set_DOCKER_IMG_URL
-        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.RGL_BUILD_TARGET }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
+        run: echo "DOCKER_IMG_URL=$DOCKER_IMG_URL" >> $GITHUB_OUTPUT
 
   build-RGL-in-docker:
     needs: publish-env-vars-for-RGL-build
