@@ -173,5 +173,6 @@ jobs:
     steps:
       - name: remove build files and tape recordings
         run: |
-             rm -rf code/build
+             cd code 
+             rm -rf build
                
