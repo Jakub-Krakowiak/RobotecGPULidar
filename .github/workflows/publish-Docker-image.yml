@@ -81,7 +81,7 @@ jobs:
               REPOSITORY_OWNER: '${{ github.repository_owner }}'
 
       - id: set_DOCKER_IMG_URL
-        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/robotecgpulidar-${{ env.RGL_BUILD_TARGET }}:latest" >> $GITHUB_ENV
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/robotecgpulidar${{ env.RGL_BUILD_TARGET }}:latest" >> $GITHUB_ENV
 
   publish-to-latest:
     needs: publish-env-vars-for-publishing-Docker-image
