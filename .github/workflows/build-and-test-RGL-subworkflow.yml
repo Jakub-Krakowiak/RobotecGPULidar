@@ -107,8 +107,6 @@ jobs:
     container:
       image: nvidia/cuda:11.7.1-base-ubuntu22.04
       env:
-        # delete optix env later
-        OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
         - ${{ needs.publish-env-vars-for-RGL-testing.outputs.PWD }}:/code
@@ -116,11 +114,11 @@ jobs:
         --rm 
         --name rgl
         --gpus all
+        --workdir /code/build/test
     steps:
       - name: test RGL inside default nvidia docker
       # libtinyxml2-9 and libspdlog-dev and RMW_IMPL are necessary because of a RGL ros2 standalone lacking dependencies bug
         run: |
-             cd /code/build/test
              apt-get update && apt-get install -y patchelf
              patchelf --set-rpath '$ORIGIN/..' RobotecGPULidar_test
 
