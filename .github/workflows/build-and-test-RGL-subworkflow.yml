@@ -145,31 +145,31 @@ jobs:
                   ./build/test/RobotecGPULidar_test
              fi
 
-  publish-env-vars-for-cleanup:
-    if: always()
-    needs: test-RGL-in-default-nvidia-docker
-    runs-on: self-hosted
-    outputs:
-      PWD: ${{ steps.set_PWD.outputs.PWD }}
-    steps:
-      - id: set_PWD
-        run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
+  # publish-env-vars-for-cleanup:
+  #   if: always()
+  #   needs: test-RGL-in-default-nvidia-docker
+  #   runs-on: self-hosted
+  #   outputs:
+  #     PWD: ${{ steps.set_PWD.outputs.PWD }}
+  #   steps:
+  #     - id: set_PWD
+  #       run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
              
-  cleanup:
-    if: always()
-    needs: publish-env-vars-for-cleanup
-    runs-on: self-hosted
-    container:
-      image: nvidia/cuda:11.7.1-base-ubuntu22.04        
-      volumes:
-        - ${{ needs.publish-env-vars-for-cleanup.outputs.PWD }}:/code
-      options:
-        --rm
-    steps:
-      - name: remove build files and tape recordings
-        run: |
-             cd /code
-             rm -f *.bin
-             rm -f *.yaml
-             rm -rf build
+  # cleanup:
+  #   if: always()
+  #   needs: publish-env-vars-for-cleanup
+  #   runs-on: self-hosted
+  #   container:
+  #     image: nvidia/cuda:11.7.1-base-ubuntu22.04        
+  #     volumes:
+  #       - ${{ needs.publish-env-vars-for-cleanup.outputs.PWD }}:/code
+  #     options:
+  #       --rm
+  #   steps:
+  #     - name: remove build files and tape recordings
+  #       run: |
+  #            cd /code
+  #            rm -f *.bin
+  #            rm -f *.yaml
+  #            rm -rf build
                
