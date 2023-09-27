@@ -40,7 +40,8 @@ jobs:
     needs: publish-env-vars-for-RGL-build
     runs-on: self-hosted
     container:
-      image: ${{ needs.publish-env-vars-for-RGL-build.outputs.DOCKER_IMG_URL }}
+      image: ghcr.io/jakub-krakowiak/robotecgpulidar:base
+      # ${{ needs.publish-env-vars-for-RGL-build.outputs.DOCKER_IMG_URL }}
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
