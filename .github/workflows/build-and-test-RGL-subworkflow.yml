@@ -89,7 +89,8 @@ jobs:
              fi
              
              sleep 2
-             ./build/test/RobotecGPULidar_test
+             cd build/test
+             ./RobotecGPULidar_test
              
   publish-env-vars-for-RGL-testing:
     needs: build-RGL-in-docker
@@ -119,12 +120,14 @@ jobs:
       - name: test RGL inside default nvidia docker
       # libtinyxml2-9 and libspdlog-dev and RMW_IMPL are necessary because of a RGL ros2 standalone lacking dependencies bug
         run: |
-            #  cd /code
+             cd /code/build/test
+             
              if [[ $RGL_BUILD_TARGET == "with-pcl" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
              then
                   apt-get update && apt-get install -y libx11-6
                   apt-get update && apt-get install -y libgl1
              fi
+
              if [[ $RGL_BUILD_TARGET == "with-ros2" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
              then
                   
@@ -135,14 +138,14 @@ jobs:
                   export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
                   echo $RMW_IMPLEMENTATION
                   sleep 2
-                  ./build/test/RobotecGPULidar_test
+                  ./RobotecGPULidar_test
                   export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
                   echo $RMW_IMPLEMENTATION
                   sleep 2
-                  ./build/test/RobotecGPULidar_test
+                  ./RobotecGPULidar_test
              else
                   sleep 2
-                  ./build/test/RobotecGPULidar_test
+                  ./RobotecGPULidar_test
              fi
 
   # publish-env-vars-for-cleanup:
@@ -168,8 +171,5 @@ jobs:
   #   steps:
   #     - name: remove build files and tape recordings
   #       run: |
-  #            cd /code
-  #            rm -f *.bin
-  #            rm -f *.yaml
-  #            rm -rf build
+  #            rm -rf code/build
                
