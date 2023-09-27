@@ -18,6 +18,7 @@ permissions:
 env:
   RGL_BUILD_TARGET: base
   REGISTRY: ghcr.io
+  PACKAGE_NAME: robotecgpulidar
 
 defaults:
       run:
@@ -41,7 +42,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: localhost:5000/robotecgpulidar-${{ env.RGL_BUILD_TARGET }}:latest
+          tags: localhost:5000/${{ env.PACKAGE_NAME }}-${{ env.RGL_BUILD_TARGET }}:latest
           target: ${{ env.RGL_BUILD_TARGET }}
 
   publish-env-vars-for-testing:
@@ -55,7 +56,7 @@ jobs:
         run: echo "RGL_BUILD_TARGET=$RGL_BUILD_TARGET" >> $GITHUB_OUTPUT
 
       - id: set_DOCKER_IMG_URL
-        run: echo "DOCKER_IMG_URL=localhost:5000/robotecgpulidar-${{ env.RGL_BUILD_TARGET }}:latest" >> $GITHUB_ENV
+        run: echo "DOCKER_IMG_URL=localhost:5000/${{ env.PACKAGE_NAME }}-${{ env.RGL_BUILD_TARGET }}:latest" >> $GITHUB_ENV
 
   test-new-image:
     needs: publish-env-vars-for-testing
@@ -64,32 +65,19 @@ jobs:
       RGL_BUILD_TARGET: ${{ needs.publish-env-vars-for-testing.outputs.RGL_BUILD_TARGET }}
       DOCKER_IMG_URL: ${{ needs.publish-env-vars-for-testing.outputs.DOCKER_IMG_URL }}
 
-  publish-env-vars-for-publishing-Docker-image:
+  publish-to-latest:
     needs: test-new-image
     runs-on: self-hosted
-    outputs:
-      RGL_BUILD_TARGET: ${{ steps.set_RGL_BUILD_TARGET.outputs.RGL_BUILD_TARGET }}
-      DOCKER_IMG_URL: ${{ steps.set_DOCKER_IMG_URL.outputs.DOCKER_IMG_URL }}
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - id: set_RGL_BUILD_TARGET
-        run: echo "RGL_BUILD_TARGET=$RGL_BUILD_TARGET" >> $GITHUB_OUTPUT
-        
       - name: Set LC repository owner name for docker tag
         run: |
               echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
         env:
               REPOSITORY_OWNER: '${{ github.repository_owner }}'
 
-      - id: set_DOCKER_IMG_URL
-        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/robotecgpulidar${{ env.RGL_BUILD_TARGET }}:latest" >> $GITHUB_ENV
-
-  publish-to-latest:
-    needs: publish-env-vars-for-publishing-Docker-image
-    runs-on: self-hosted
-    permissions:
-      contents: read
-      packages: write
-    steps:
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
@@ -102,5 +90,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ needs.publish-env-vars-for-publishing-Docker-image.outputs.DOCKER_IMG_URL }}
-          target: ${{ needs.publish-env-vars-for-publishing-Docker-image.outputs.RGL_BUILD_TARGET }}
+          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.PACKAGE_NAME }}-${{ env.RGL_BUILD_TARGET }}:latest
+          target: ${{ env.RGL_BUILD_TARGET }}

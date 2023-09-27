@@ -17,6 +17,7 @@ env:
   RGL_BUILD_TARGET: base
   TAG: ${{ inputs.TAG || 'latest' }}
   REGISTRY: ghcr.io
+  PACKAGE_NAME: robotecgpulidar
 
 defaults:
       run:
@@ -45,7 +46,7 @@ jobs:
               REPOSITORY_OWNER: '${{ github.repository_owner }}'
 
       - id: set_DOCKER_IMG_URL
-        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/robotecgpulidar-${{ env.RGL_BUILD_TARGET }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.PACKAGE_NAME }}-${{ env.RGL_BUILD_TARGET }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
 
   build-and-test:
     needs: publish-env-vars-for-RGL-build
