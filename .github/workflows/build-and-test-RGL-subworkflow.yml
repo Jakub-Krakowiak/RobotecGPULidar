@@ -170,9 +170,9 @@ jobs:
         - ${{ needs.publish-env-vars-for-cleanup.outputs.PWD }}:/code
       options:
         --rm
+        --workdir /code
     steps:
       - name: remove build files and tape recordings
         run: |
-             cd code 
              rm -rf build
                
