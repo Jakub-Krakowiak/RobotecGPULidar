@@ -40,8 +40,7 @@ jobs:
     needs: publish-env-vars-for-RGL-build
     runs-on: self-hosted
     container:
-      image: ghcr.io/jakub-krakowiak/robotecgpulidar:base
-      # ${{ needs.publish-env-vars-for-RGL-build.outputs.DOCKER_IMG_URL }}
+      image: ${{ needs.publish-env-vars-for-RGL-build.outputs.DOCKER_IMG_URL }}
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
@@ -122,7 +121,9 @@ jobs:
       # libtinyxml2-9 and libspdlog-dev and RMW_IMPL are necessary because of a RGL ros2 standalone lacking dependencies bug
         run: |
              cd /code/build/test
-             
+             apt-get update && apt-get install -y patchelf
+             patchelf --set-rpath '$ORIGIN/..' RobotecGPULidar_test
+
              if [[ $RGL_BUILD_TARGET == "with-pcl" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]
              then
                   apt-get update && apt-get install -y libx11-6
@@ -149,28 +150,28 @@ jobs:
                   ./RobotecGPULidar_test
              fi
 
-  # publish-env-vars-for-cleanup:
-  #   if: always()
-  #   needs: test-RGL-in-default-nvidia-docker
-  #   runs-on: self-hosted
-  #   outputs:
-  #     PWD: ${{ steps.set_PWD.outputs.PWD }}
-  #   steps:
-  #     - id: set_PWD
-  #       run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
+  publish-env-vars-for-cleanup:
+    if: always()
+    needs: test-RGL-in-default-nvidia-docker
+    runs-on: self-hosted
+    outputs:
+      PWD: ${{ steps.set_PWD.outputs.PWD }}
+    steps:
+      - id: set_PWD
+        run: echo "PWD=$(pwd)" >> $GITHUB_OUTPUT
              
-  # cleanup:
-  #   if: always()
-  #   needs: publish-env-vars-for-cleanup
-  #   runs-on: self-hosted
-  #   container:
-  #     image: nvidia/cuda:11.7.1-base-ubuntu22.04        
-  #     volumes:
-  #       - ${{ needs.publish-env-vars-for-cleanup.outputs.PWD }}:/code
-  #     options:
-  #       --rm
-  #   steps:
-  #     - name: remove build files and tape recordings
-  #       run: |
-  #            rm -rf code/build
+  cleanup:
+    if: always()
+    needs: publish-env-vars-for-cleanup
+    runs-on: self-hosted
+    container:
+      image: nvidia/cuda:11.7.1-base-ubuntu22.04        
+      volumes:
+        - ${{ needs.publish-env-vars-for-cleanup.outputs.PWD }}:/code
+      options:
+        --rm
+    steps:
+      - name: remove build files and tape recordings
+        run: |
+             rm -rf code/build
                
