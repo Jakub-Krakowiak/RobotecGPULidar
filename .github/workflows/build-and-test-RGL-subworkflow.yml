@@ -118,7 +118,7 @@ jobs:
       - name: test RGL inside default nvidia docker
       # libtinyxml2-9 and libspdlog-dev and RMW_IMPL are necessary because of a RGL ros2 standalone lacking dependencies bug
         run: |
-             cd code/build/test
+             cd /code/build/test
              apt-get update && apt-get install -y patchelf
              patchelf --set-rpath '$ORIGIN/..' RobotecGPULidar_test
 
@@ -171,5 +171,6 @@ jobs:
     steps:
       - name: remove build files and tape recordings
         run: |
+             cd /code
              rm -rf build
                
