@@ -12,7 +12,6 @@ on:
        required: false
        default: true
        type: boolean
-concurrency: RGL-CI
 permissions:
       contents: read
 env:
@@ -24,7 +23,13 @@ defaults:
       run:
         shell: bash
 jobs:
+  wait_for_mutex:
+    runs-on: self-hosted
+    steps:
+    - uses: ahmadnassri/action-workflow-queue@v1
+
   checkout-repository:
+    needs: wait_for_mutex
     if: github.event.pull_request.merged == true || inputs.OVERRIDE_MERGE_CHECK == true
     runs-on: self-hosted
     steps:

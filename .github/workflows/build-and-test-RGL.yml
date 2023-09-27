@@ -1,6 +1,5 @@
 name: build-and-test-in-Docker
 run-name: ${{ github.actor }} builds and tests RGL in Docker
-concurrency: RGL-CI
 on:
     pull_request:
         branches:
@@ -23,7 +22,13 @@ defaults:
       run:
         shell: bash
 jobs:
+  wait_for_mutex:
+    runs-on: self-hosted
+    steps:
+    - uses: ahmadnassri/action-workflow-queue@v1
+    
   checkout-repository:
+    needs: wait_for_mutex
     runs-on: self-hosted
     steps:
       - name: Check out repository code
