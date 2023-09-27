@@ -24,7 +24,7 @@ defaults:
         shell: bash
 jobs:
   wait_for_mutex:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     - uses: ahmadnassri/action-workflow-queue@v1
 
