@@ -29,6 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: ahmadnassri/action-workflow-queue@v1
+      with:
+        # 30h
+        timeout: 108000000
 
   checkout-repository:
     needs: wait_for_mutex
