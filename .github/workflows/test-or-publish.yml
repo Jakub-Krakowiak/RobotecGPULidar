@@ -91,6 +91,6 @@ jobs:
   # start of test workflow
   test-all-configurations:
     needs: checkout-repository
-    if: github.event.pull_request.merged == false || inputs.WORKFLOW_NAME == 'test'
+    if: (github.event.pull_request.merged == false && inputs.WORKFLOW_NAME == '') || inputs.WORKFLOW_NAME == 'test'
     uses: ./.github/workflows/test-all-RGL-configurations-from-repo-subworkflow.yml
   # end of test workflow
