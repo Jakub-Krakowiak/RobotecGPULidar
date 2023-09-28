@@ -9,10 +9,15 @@ on:
  
   workflow_dispatch:
    inputs:
-    WORKFLOW_NAME:
+    TEST:
      required: true
-     type: string
-     description: choose 'test' or 'publish'
+     default: true
+     type: boolean
+    PUBLISH:
+     required: true
+     default: false
+     type: boolean
+     description: warning! can't run both in one workflow
 
 permissions:
       contents: read
@@ -47,7 +52,7 @@ jobs:
   # docker run -d -p 5000:5000 --name registry registry:2.7
   build-docker-image:
     needs: checkout-repository
-    if: github.event.pull_request.merged == true || inputs.WORKFLOW_NAME == 'publish'
+    if: github.event.pull_request.merged == true || inputs.PUBLISH == true
     runs-on: self-hosted
     steps:
       - name: Build and push Docker image to local repository
@@ -94,6 +99,6 @@ jobs:
   # start of test workflow
   test-all-configurations:
     needs: checkout-repository
-    if: (github.event.pull_request.merged == false && inputs.WORKFLOW_NAME == '') || inputs.WORKFLOW_NAME == 'test'
+    if: (github.event.pull_request.merged == false && inputs.PUBLISH == false) || inputs.TEST == true
     uses: ./.github/workflows/test-all-RGL-configurations-from-repo-subworkflow.yml
   # end of test workflow
