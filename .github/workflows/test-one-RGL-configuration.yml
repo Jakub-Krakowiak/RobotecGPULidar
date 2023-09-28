@@ -1,5 +1,5 @@
-name: build-and-test-in-Docker-subworkflow
-run-name: ${{ github.actor }} builds and tests RGL in Docker
+name: test-one-RGL-configuration
+run-name: ${{ github.actor }} tests one RGL configuration in Docker
 on:
   workflow_call:
     inputs:

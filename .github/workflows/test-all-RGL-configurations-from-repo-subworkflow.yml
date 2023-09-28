@@ -1,0 +1,105 @@
+name: build-and-test-in-Docker-from-repo
+
+run-name: ${{ github.actor }} builds and tests RGL in Docker from repo
+
+on: workflow_call
+
+permissions:
+ contents: read
+
+env:
+ TAG: latest
+ REGISTRY: ghcr.io
+ PACKAGE_NAME: robotecgpulidar
+
+defaults:
+ run:
+  shell: bash
+
+jobs:
+  publish-env-vars-for-RGL-build-base:
+    runs-on: self-hosted
+    outputs:
+      DOCKER_IMG_URL: ${{ steps.set_DOCKER_IMG_URL.outputs.DOCKER_IMG_URL }}
+    steps:
+      - name: Set LC repository name for docker tag
+        run: |
+              echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+        env:
+              REPOSITORY_OWNER: '${{ github.repository_owner }}'
+
+      - id: set_DOCKER_IMG_URL
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.PACKAGE_NAME }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
+
+  build-and-test-base:
+    needs: publish-env-vars-for-RGL-build-base
+    uses: ./.github/workflows/test-one-RGL-configuration.yml
+    with:
+      RGL_BUILD_TARGET: base
+      DOCKER_IMG_URL: ${{ needs.publish-env-vars-for-RGL-build-base.outputs.DOCKER_IMG_URL }}
+
+  publish-env-vars-for-RGL-build-with-pcl:
+    needs: build-and-test-base
+    runs-on: self-hosted
+    outputs:
+      DOCKER_IMG_URL: ${{ steps.set_DOCKER_IMG_URL.outputs.DOCKER_IMG_URL }}
+    steps:
+      - name: Set LC repository name for docker tag
+        run: |
+              echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+        env:
+              REPOSITORY_OWNER: '${{ github.repository_owner }}'
+
+      - id: set_DOCKER_IMG_URL
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.PACKAGE_NAME }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
+
+  build-and-test-with-pcl:
+    needs: publish-env-vars-for-RGL-build-with-pcl
+    uses: ./.github/workflows/test-one-RGL-configuration.yml
+    with:
+      RGL_BUILD_TARGET: with-pcl
+      DOCKER_IMG_URL: ${{ needs.publish-env-vars-for-RGL-build-with-pcl.outputs.DOCKER_IMG_URL }}
+
+  publish-env-vars-for-RGL-build-with-ros2:
+    needs: build-and-test-with-pcl
+    runs-on: self-hosted
+    outputs:
+      DOCKER_IMG_URL: ${{ steps.set_DOCKER_IMG_URL.outputs.DOCKER_IMG_URL }}
+    steps:
+      - name: Set LC repository name for docker tag
+        run: |
+              echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+        env:
+              REPOSITORY_OWNER: '${{ github.repository_owner }}'
+
+      - id: set_DOCKER_IMG_URL
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.PACKAGE_NAME }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
+
+  build-and-test-with-ros2:
+    needs: publish-env-vars-for-RGL-build-with-ros2
+    uses: ./.github/workflows/test-one-RGL-configuration.yml
+    with:
+      RGL_BUILD_TARGET: with-ros2
+      DOCKER_IMG_URL: ${{ needs.publish-env-vars-for-RGL-build-with-ros2.outputs.DOCKER_IMG_URL }}
+
+  publish-env-vars-for-RGL-build-with-pcl-and-ros2:
+    needs: build-and-test-with-ros2
+    runs-on: self-hosted
+    outputs:
+      DOCKER_IMG_URL: ${{ steps.set_DOCKER_IMG_URL.outputs.DOCKER_IMG_URL }}
+    steps:
+      - name: Set LC repository name for docker tag
+        run: |
+              echo "REPOSITORY_OWNER_LC=${REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+        env:
+              REPOSITORY_OWNER: '${{ github.repository_owner }}'
+
+      - id: set_DOCKER_IMG_URL
+        run: echo "DOCKER_IMG_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY_OWNER_LC }}/${{ env.PACKAGE_NAME }}:${{ env.TAG }}" >> $GITHUB_OUTPUT
+
+  build-and-test-with-pcl-and-ros2:
+    needs: publish-env-vars-for-RGL-build-with-pcl-and-ros2
+    uses: ./.github/workflows/test-one-RGL-configuration.yml
+    with:
+      RGL_BUILD_TARGET: with-pcl-and-ros2
+      DOCKER_IMG_URL: ${{ needs.publish-env-vars-for-RGL-build-with-pcl-and-ros2.outputs.DOCKER_IMG_URL }}
