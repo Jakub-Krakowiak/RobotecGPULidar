@@ -13,11 +13,12 @@ on:
      required: true
      default: true
      type: boolean
+     description: test
     PUBLISH:
      required: true
      default: false
      type: boolean
-     description: warning! can't run both in one workflow
+     description: publish - warning! can't do both in one workflow
 
 permissions:
       contents: read
