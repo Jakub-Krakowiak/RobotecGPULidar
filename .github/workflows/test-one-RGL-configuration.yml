@@ -1,24 +1,31 @@
 name: test-one-RGL-configuration
+
 run-name: ${{ github.actor }} tests one RGL configuration in Docker
+
 on:
   workflow_call:
     inputs:
+
       RGL_BUILD_TARGET:
         required: true
         type: string
+
       DOCKER_IMG_URL:
         required: true
         type: string
+
 permissions:
-      contents: read
+  contents: read
+
 env:
   RGL_BUILD_TARGET: ${{ inputs.RGL_BUILD_TARGET}}
   DOCKER_IMG_URL: ${{ inputs.DOCKER_IMG_URL}}
   REGISTRY: ghcr.io
 
 defaults:
-      run:
-        shell: bash
+  run:
+    shell: bash
+
 jobs:
   publish-env-vars-for-RGL-build:
     runs-on: self-hosted
@@ -45,7 +52,6 @@ jobs:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
-        # the code volume is not necessary - it builds without it - investigate
         - ${{ needs.publish-env-vars-for-RGL-build.outputs.PWD }}:/code
         - ${{ needs.publish-env-vars-for-RGL-build.outputs.OptiX_INSTALL_DIR }}:/optix
       options: 
@@ -53,9 +59,9 @@ jobs:
         --name rgl
         --gpus all
     steps:
-      # investigate the git fix 
       - name: fix git
         run: git config --global --add safe.directory /__w/RobotecGPULidar/RobotecGPULidar
+
       - name: build and test RGL
         run: |
              if [[ $RGL_BUILD_TARGET == "with-ros2" || $RGL_BUILD_TARGET == "with-pcl-and-ros2" ]]

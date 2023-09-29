@@ -5,11 +5,11 @@ run-name: ${{ github.actor }} builds and tests RGL in Docker locally
 on: workflow_call
 
 permissions:
- contents: read
+  contents: read
 
 defaults:
- run:
-  shell: bash
+  run:
+    shell: bash
 
 jobs:
   build-and-test-base:

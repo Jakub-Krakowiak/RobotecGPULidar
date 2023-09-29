@@ -4,37 +4,40 @@ run-name: ${{ github.actor }} tests RGL or publishes RGL Docker image
 
 on:
   pull_request:
-   types: [opened, reopened, edited, closed]
-   branches: main
+    types: [opened, reopened, synchronize, closed]
+    branches: main
  
   workflow_dispatch:
-   inputs:
-    TEST:
-     required: true
-     default: true
-     type: boolean
-     description: test
-    PUBLISH:
-     required: true
-     default: false
-     type: boolean
-     description: publish - warning! can't do both in one workflow
+    inputs:
+      TEST:
+        required: true
+        default: true
+        type: boolean
+        description: test - warning! can't do both in one workflow
+
+      PUBLISH:
+        required: true
+        default: false
+        type: boolean
+        description: publish - warning! can't do both in one workflow
 
 permissions:
-      contents: read
+  contents: read
+
 env:
   RGL_BUILD_TARGET: with-pcl-and-ros2
   REGISTRY: ghcr.io
   PACKAGE_NAME: robotecgpulidar
 
 defaults:
-      run:
-        shell: bash
+  run:
+    shell: bash
+
 jobs:
   wait_for_mutex:
     runs-on: ubuntu-latest
     steps:
-    - uses: ahmadnassri/action-workflow-queue@v1
+    - uses: ahmadnassri/action-workflow-queue@ecb80b5975f6e540c19d639a5891699ac0ecd1f6
       with:
         # 30h
         timeout: 108000000
